@@ -1,0 +1,67 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Package xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10" xmlns:mp="http://schemas.microsoft.com/appx/2014/phone/manifest" xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10" IgnorableNamespaces="uap mp">
+  <Identity Name="ME.Baconit" Publisher="CN=Admin" Version="5.0.1.0" />
+  <mp:PhoneIdentity PhoneProductId="a941e755-1dc4-4a35-9f20-ca3d8d0beaaa" PhonePublisherId="08055603-0000-0006-7012-624450802090" />
+  <Properties>
+    <DisplayName>Baconit</DisplayName>
+    <PublisherDisplayName>MediaExplorer</PublisherDisplayName>
+    <Logo>Assets\AppAssets\StoreLogo\StoreLogo.png</Logo>
+  </Properties>
+  <Dependencies>
+    <TargetDeviceFamily Name="Windows.Universal" MinVersion="10.0.0.0" MaxVersionTested="10.0.0.0" />
+  </Dependencies>
+  <Resources>
+    <Resource Language="en-us" />
+  </Resources>
+  <Applications>
+    <Application Id="App" Executable="$targetnametoken$.exe" EntryPoint="Baconit.App">
+      <uap:VisualElements DisplayName="Baconit" Square150x150Logo="Assets\AppAssets\Square150x150\Square150.png" Square44x44Logo="Assets\AppAssets\Square44x44\Square44.png" Description="Baconit is a free, beautiful, open source, reddit client rewritten from the ground up for all Windows 10 devices. Baconit is the highest rated reddit client on Windows and is known for its power, design, functionality, and quality." BackgroundColor="transparent">
+        <uap:LockScreen Notification="badge" BadgeLogo="Assets\AppAssets\BadgeLogo\96.png" />
+        <uap:DefaultTile Wide310x150Logo="Assets\AppAssets\Wide310x310\Wide310.png" ShortName="Baconit" Square71x71Logo="Assets\AppAssets\Square71x71\Square71.png" Square310x310Logo="Assets\AppAssets\Square310x310\Square210.png">
+          <uap:ShowNameOnTiles>
+            <uap:ShowOn Tile="square150x150Logo" />
+            <uap:ShowOn Tile="wide310x150Logo" />
+            <uap:ShowOn Tile="square310x310Logo" />
+          </uap:ShowNameOnTiles>
+        </uap:DefaultTile>
+        <uap:SplashScreen Image="Assets\AppAssets\SplashScreen\Splash.png" BackgroundColor="transparent" />
+        <uap:InitialRotationPreference>
+          <uap:Rotation Preference="landscape"/>
+          <uap:Rotation Preference="portrait"/>
+          <uap:Rotation Preference="landscapeFlipped"/></uap:InitialRotationPreference>
+      </uap:VisualElements>
+
+      <Extensions>       
+        <uap:Extension Category="windows.protocol">  
+          <uap:Protocol Name="com.vipxam.reddit-12345" ReturnResults="optional">  
+            <uap:Logo>Assets\AppAssets\Square44x44\Square44.png</uap:Logo>  
+            <uap:DisplayName>Baconit</uap:DisplayName>  
+          </uap:Protocol>  
+        </uap:Extension>       
+        
+       <Extension Category="windows.backgroundTasks" EntryPoint="BaconBackground.BackgroundEntry">
+          <BackgroundTasks>
+            <Task Type="systemEvent" />
+            <Task Type="timer" />
+          </BackgroundTasks>
+        </Extension>
+      </Extensions>
+
+    </Application>
+  </Applications>
+
+  <Capabilities>
+    <Capability Name="internetClient" />
+    <uap:Capability Name="picturesLibrary" />
+    <uap:Capability Name="removableStorage"/>
+    <DeviceCapability Name="proximity" />
+    <DeviceCapability Name="bluetooth.rfcomm">
+      <Device Id="any">
+        <!-- Used by the Microsoft Band SDK -->
+        <Function Type="serviceId:A502CA9A-2BA5-413C-A4E0-13804E47B38F" />
+        <!-- Used by the Microsoft Band SDK -->
+        <Function Type="serviceId:C742E1A2-6320-5ABC-9643-D206C677E580" />
+      </Device>
+    </DeviceCapability>
+  </Capabilities>
+</Package>
