@@ -2,7 +2,7 @@
 My fork of famous Baconit app
 
 ## About
-The highest rated [r]eddit client for "very small (at 2003 year) Windows Phone family"  has been rewritten from the ground up and is now available for all W10M-contained devices. Now with a dynamic new UI, faster speeds, and features you have been asking for. Welcome to the Baconit. It's great "old new thing", indeed ;)
+The highest rated [r]eddit client for "very small (at 2023 year) Windows Phone family"  has been rewritten from the ground up and is now available for all W10M-contained devices. Now with a dynamic new UI, faster speeds, and features you have been asking for. Welcome to the Baconit. It's great "old new thing", indeed ;)
 
 ## Screenshots
 ![](Images/shot1.png)
