@@ -1,10 +1,10 @@
 # Baconit WP8 partial decomp. + micro-RnD
 
-## What is is?
+## What is it?
 
 Baconit.xap's Baconit + BaconitData "blocks" reverse-engeneering
 
-## Screenshots
+## Screenshots (original Baconit wp8 running)
 ![](Images/shot01.png)
 ![](Images/shot02.png)
 ![](Images/shot03.png)
