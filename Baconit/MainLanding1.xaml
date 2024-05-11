@@ -1,0 +1,460 @@
+﻿<phone:PhoneApplicationPage 
+    x:Class="Baconit.MainLanding"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:phone="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone"
+    xmlns:controls="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+    xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.ToolkitCustom"
+    xmlns:localControls="clr-namespace:Microsoft.Phone.Controls;assembly=DynamicPanorma"
+    xmlns:localCont="clr-namespace:Baconit.CustomControls"
+    FontFamily="{StaticResource PhoneFontFamilyNormal}"
+    FontSize="{StaticResource PhoneFontSizeNormal}"
+    Foreground="{StaticResource PhoneForegroundBrush}"
+    toolkit:TiltEffect.IsTiltEnabled="True">
+
+    <phone:PhoneApplicationPage.Resources>       
+           <Style x:Key="MainViewButton" TargetType="Button">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Grid Background="Transparent">
+                            <VisualStateManager.VisualStateGroups>
+                                <VisualStateGroup x:Name="CommonStates">
+                                    <VisualState x:Name="Normal"/>
+                                    <VisualState x:Name="MouseOver"/>
+                                    <VisualState x:Name="Pressed" />
+                                    <VisualState x:Name="Disabled" />
+                                </VisualStateGroup>
+                            </VisualStateManager.VisualStateGroups>
+                            <Border BorderThickness="0" CornerRadius="0" Margin="0" Background="Transparent">
+                                <ContentControl x:Name="ContentContainer" ContentTemplate="{TemplateBinding ContentTemplate}" Content="{TemplateBinding Content}" Foreground="{TemplateBinding Foreground}" HorizontalAlignment="Left" Padding="0"/>
+                            </Border>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="TileButtonTemplate" TargetType="Button">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Grid Background="Transparent">
+                            <VisualStateManager.VisualStateGroups>
+                                <VisualStateGroup x:Name="CommonStates">
+                                    <VisualState x:Name="Normal"/>
+                                    <VisualState x:Name="MouseOver"/>
+                                    <VisualState x:Name="Pressed" />
+                                    <VisualState x:Name="Disabled" />
+                                </VisualStateGroup>
+                            </VisualStateManager.VisualStateGroups>
+                            <Border x:Name="ButtonBackground" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="0" CornerRadius="0" Margin="0" Background="{StaticResource PhoneAccentBrush}">
+                                <ContentControl x:Name="ContentContainer" ContentTemplate="{TemplateBinding ContentTemplate}" Content="{TemplateBinding Content}" Foreground="{TemplateBinding Foreground}" HorizontalAlignment="Left" VerticalAlignment="Top" Padding="0"/>
+                            </Border>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Storyboard x:Name="ShowProgressIndicator">
+            <DoubleAnimation
+                    Storyboard.TargetName="LoadingBar"
+                    Storyboard.TargetProperty="Opacity"
+                    From="0.0" To="1.0" Duration="0:0:0.2" />
+        </Storyboard>
+        <Storyboard x:Name="HideProgressIndicator">
+            <DoubleAnimation
+                    Storyboard.TargetName="LoadingBar"
+                    Storyboard.TargetProperty="Opacity"
+                    From="1.0" To="0.0" Duration="0:0:0.2" />
+        </Storyboard>
+
+        <Storyboard x:Name="CloseFirstTimeSettings">
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)"
+                                           Storyboard.TargetName="FirstTimeHolder">
+                <EasingDoubleKeyFrame KeyTime="0" Value="0"/>
+                <EasingDoubleKeyFrame KeyTime="0:0:0.6" Value="200">
+                    <EasingDoubleKeyFrame.EasingFunction>
+                        <ExponentialEase EasingMode="EaseInOut" Exponent="6"/>
+                    </EasingDoubleKeyFrame.EasingFunction>
+                </EasingDoubleKeyFrame>
+            </DoubleAnimationUsingKeyFrames>
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Opacity)"
+                                           Storyboard.TargetName="FirstTimeOptions">
+                <EasingDoubleKeyFrame KeyTime="0" Value="1"/>
+                <EasingDoubleKeyFrame KeyTime="0:0:0.6" Value="0">
+                    <EasingDoubleKeyFrame.EasingFunction>
+                        <ExponentialEase EasingMode="EaseInOut" Exponent="6"/>
+                    </EasingDoubleKeyFrame.EasingFunction>
+                </EasingDoubleKeyFrame>
+            </DoubleAnimationUsingKeyFrames>
+        </Storyboard>
+
+        <Storyboard x:Name="CloseFirstTimeUse">
+            <DoubleAnimation
+                    Storyboard.TargetName="FirstTimeWait"
+                    Storyboard.TargetProperty="Opacity"
+                    From="1.0" To="0.0" Duration="0:0:0.5" 
+                    Completed="FirstTimeWait_Done">
+            </DoubleAnimation>
+        </Storyboard>
+        
+        <Storyboard x:Name="ShowFirstTimeSettings">
+            <DoubleAnimation
+                    Storyboard.TargetName="FirstTimeTitle"
+                    Storyboard.TargetProperty="Opacity"
+                    From="0.0" To="1.0" Duration="0:0:1.2" />
+            <DoubleAnimation
+                    Storyboard.TargetName="FirstTimeTitle"
+                    Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.TranslateX)"
+                    From="50" To="0" Duration="0:0:1.2" >
+                <DoubleAnimation.EasingFunction>
+                    <ExponentialEase EasingMode="EaseOut" Exponent="6"/>
+                </DoubleAnimation.EasingFunction>
+            </DoubleAnimation>
+
+            <DoubleAnimation
+                    Storyboard.TargetName="FirstTimeAutoTitle"
+                    Storyboard.TargetProperty="Opacity" BeginTime="0:0:0.6"
+                    From="0.0" To="1.0" Duration="0:0:1.0" />
+            <DoubleAnimation
+                    Storyboard.TargetName="FirstTimeAutoTitle" BeginTime="0:0:0.6"
+                    Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.TranslateX)"
+                    From="50" To="0" Duration="0:0:1.0" >
+                <DoubleAnimation.EasingFunction>
+                    <ExponentialEase EasingMode="EaseOut" Exponent="6"/>
+                </DoubleAnimation.EasingFunction>
+            </DoubleAnimation>
+
+            <DoubleAnimation
+                    Storyboard.TargetName="FistTimeAutoText"
+                    Storyboard.TargetProperty="Opacity" BeginTime="0:0:1.0"
+                    From="0.0" To="1.0" Duration="0:0:1.0" />
+            <DoubleAnimation
+                    Storyboard.TargetName="FistTimeAutoText" BeginTime="0:0:1.0"
+                    Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.TranslateX)"
+                    From="50" To="0" Duration="0:0:1.0" >
+                <DoubleAnimation.EasingFunction>
+                    <ExponentialEase EasingMode="EaseOut" Exponent="6"/>
+                </DoubleAnimation.EasingFunction>
+            </DoubleAnimation>
+
+            <DoubleAnimation
+                    Storyboard.TargetName="AutomaticUpdatingSwitch"
+                    Storyboard.TargetProperty="Opacity" BeginTime="0:0:1.0"
+                    From="0.0" To="1.0" Duration="0:0:1.0" />
+            <DoubleAnimation
+                    Storyboard.TargetName="AutomaticUpdatingSwitch" BeginTime="0:0:1.0"
+                    Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.TranslateX)"
+                    From="50" To="0" Duration="0:0:1.0" >
+                <DoubleAnimation.EasingFunction>
+                    <ExponentialEase EasingMode="EaseOut" Exponent="6"/>
+                </DoubleAnimation.EasingFunction>
+            </DoubleAnimation>
+
+            <DoubleAnimation
+                    Storyboard.TargetName="FirstTimeContentTitle"
+                    Storyboard.TargetProperty="Opacity" BeginTime="0:0:1.5"
+                    From="0.0" To="1.0" Duration="0:0:1.0" />
+            <DoubleAnimation
+                    Storyboard.TargetName="FirstTimeContentTitle" BeginTime="0:0:1.5"
+                    Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.TranslateX)"
+                    From="50" To="0" Duration="0:0:1.0" >
+                <DoubleAnimation.EasingFunction>
+                    <ExponentialEase EasingMode="EaseOut" Exponent="6"/>
+                </DoubleAnimation.EasingFunction>
+            </DoubleAnimation>
+            <DoubleAnimation
+                    Storyboard.TargetName="FirstTimeConentText"
+                    Storyboard.TargetProperty="Opacity" BeginTime="0:0:2.0"
+                    From="0.0" To="1.0" Duration="0:0:1.0" />
+            <DoubleAnimation
+                    Storyboard.TargetName="FirstTimeConentText" BeginTime="0:0:2.0"
+                    Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.TranslateX)"
+                    From="50" To="0" Duration="0:0:1.0" >
+                <DoubleAnimation.EasingFunction>
+                    <ExponentialEase EasingMode="EaseOut" Exponent="6"/>
+                </DoubleAnimation.EasingFunction>
+            </DoubleAnimation>
+            <DoubleAnimation
+                    Storyboard.TargetName="AdultFilterSwitch"
+                    Storyboard.TargetProperty="Opacity" BeginTime="0:0:2.0"
+                    From="0.0" To="1.0" Duration="0:0:1.0" />
+            <DoubleAnimation
+                    Storyboard.TargetName="AdultFilterSwitch" BeginTime="0:0:2.0"
+                    Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.TranslateX)"
+                    From="50" To="0" Duration="0:0:1.0" >
+                <DoubleAnimation.EasingFunction>
+                    <ExponentialEase EasingMode="EaseOut" Exponent="6"/>
+                </DoubleAnimation.EasingFunction>
+            </DoubleAnimation>
+
+            <DoubleAnimation
+                    Storyboard.TargetName="CloseFirstTime"
+                    Storyboard.TargetProperty="Opacity" BeginTime="0:0:2.5"
+                    From="0.0" To="1.0" Duration="0:0:1.0" />
+            <DoubleAnimation
+                    Storyboard.TargetName="CloseFirstTime" BeginTime="0:0:2.5"
+                    Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.TranslateX)"
+                    From="50" To="0" Duration="0:0:1.0" >
+                <DoubleAnimation.EasingFunction>
+                    <ExponentialEase EasingMode="EaseOut" Exponent="6"/>
+                </DoubleAnimation.EasingFunction>
+            </DoubleAnimation>
+        </Storyboard>
+    </phone:PhoneApplicationPage.Resources>
+
+    <Grid>           
+        <localControls:DynamicBackgroundPanorama Title="   baconit" x:Name="MainPanorama" SelectionChanged="Panorama_SelectionChanged">
+            <localControls:DynamicBackgroundPanorama.Background>
+                <ImageBrush ImageSource="/Images/MainPageBackgrounds/Dummyimage.png"/>
+            </localControls:DynamicBackgroundPanorama.Background>
+
+            <controls:PanoramaItem Margin="12">
+                <Grid Margin="0,-68,0,0">
+                    <!-- Hello holder -->
+                    <StackPanel x:Name="HelloHolder" Visibility="Collapsed">
+                        <TextBlock Text="Hello" FontSize="86"/>
+                        <TextBlock Text="Welcome to Baconit." FontSize="30" Margin="5,0,0,0" Foreground="{StaticResource PhoneSubtleBrush}"/>
+                        <TextBlock Text="We think you'll like it here." Margin="5,0,0,0" FontSize="30" Foreground="{StaticResource PhoneSubtleBrush}"/>
+                    </StackPanel>
+                    <!-- Update Text -->
+                    <StackPanel x:Name="UpdateHolder" Visibility="Collapsed">
+                        <TextBlock Text="Update!" FontSize="86"/>
+                        <ScrollViewer Height="440">
+                            <StackPanel>
+                                <TextBlock Grid.Row="3" Margin="0,12,0,0" Text="Minor Changes" FontSize="25" Foreground="{StaticResource PhoneAccentBrush}" />
+                                <TextBlock Grid.Row="4" Margin="0,0,0,12" FontSize="20" >
+                                    New start experience 
+                                    <LineBreak/>New GIF handling in Flip View
+                                    <LineBreak/>Flip View memory improvements
+                                    <LineBreak/>Flip View perf improvements
+                                    <LineBreak/>Hide all read stories
+                                    <LineBreak/>Fixed app reset bug
+                                    <LineBreak/>Fixed CAPTCHA bug
+                                </TextBlock>
+                                <TextBlock Grid.Row="3" Margin="0,12,0,0" Text="Minor Changes" FontSize="25" Foreground="{StaticResource PhoneAccentBrush}" />
+                                <TextBlock Grid.Row="4" Margin="0,0,0,12" FontSize="20" >
+                                    UI tweaking and polishing
+                                    <LineBreak/>WP Lock screens new default lock screen subreddit
+                                    <LineBreak/>Added Clear cache in settings under general
+                                    <LineBreak/>Fixed https parsing bug
+                                </TextBlock>
+                            </StackPanel>
+                        </ScrollViewer>
+                    </StackPanel>
+                    
+                    <!-- Top Story Holder -->
+                    <StackPanel x:Name="TopStoryHolder" Visibility="Visible">
+                        <TextBlock Text="Hello" FontSize="86"/>
+                        <Button Style="{StaticResource MainViewButton}" Click="Messages_Click">
+                            <Button.Content>
+                                <TextBlock x:Name="TopStoryMessages" Text="" FontSize="30" Margin="0,0,0,24" FontFamily="{StaticResource PhoneFontFamilyNormal}"/>
+                            </Button.Content>
+                        </Button>
+                        <Button Style="{StaticResource MainViewButton}" x:Name="TopStory1" Opacity="0" Tap="TopStory_Tap">
+                            <Button.Content>
+                                <TextBlock Text="" x:Name="TopStoryText1" TextWrapping="Wrap" MaxHeight="120" TextTrimming="WordEllipsis" FontSize="30" Margin="0,0,0,30" FontFamily="{StaticResource PhoneFontFamilyLight}"/>
+                            </Button.Content>                            
+                        </Button>
+                        <Button Style="{StaticResource MainViewButton}" x:Name="TopStory2" Opacity="0" Tap="TopStory_Tap">
+                            <Button.Content>
+                                <TextBlock Text="" x:Name="TopStoryText2" TextWrapping="Wrap" FontSize="30" Margin="0,0,0,30" MaxHeight="120" TextTrimming="WordEllipsis" FontFamily="{StaticResource PhoneFontFamilyLight}"/>
+                            </Button.Content>
+                        </Button>
+                        <Button Style="{StaticResource MainViewButton}" x:Name="TopStory3" Opacity="0" Tap="TopStory_Tap">
+                            <Button.Content>
+                                <TextBlock Text="" x:Name="TopStoryText3" TextWrapping="Wrap" FontSize="30" Margin="0,0,0,24" MaxHeight="120" TextTrimming="WordEllipsis" FontFamily="{StaticResource PhoneFontFamilyLight}"/>
+                            </Button.Content>
+                        </Button> 
+                        <StackPanel.Resources>
+                            <Storyboard x:Name="FadeInTopStories">
+                                <DoubleAnimation
+                                    Storyboard.TargetName="TopStory1"
+                                    Storyboard.TargetProperty="Opacity" BeginTime="0:0:0.0"
+                                    From="0.0" To="1.0" Duration="0:0:0.5" />
+                                <DoubleAnimation
+                                    Storyboard.TargetName="TopStory2"
+                                    Storyboard.TargetProperty="Opacity" BeginTime="0:0:0.25"
+                                    From="0.0" To="1.0" Duration="0:0:0.5" />
+
+                                <DoubleAnimation
+                                    Storyboard.TargetName="TopStory3"
+                                    Storyboard.TargetProperty="Opacity" BeginTime="0:0:0.5"
+                                    From="0.0" To="1.0" Duration="0:0:0.5" />
+                            </Storyboard>
+                        </StackPanel.Resources>
+                    </StackPanel>
+                </Grid>
+            </controls:PanoramaItem>
+
+            <!--reddits-->
+            <controls:PanoramaItem Margin="0,-21,0,0">
+                <phone:LongListSelector x:Name="RedditsList" Margin="0,0,0,0" ItemsSource="{Binding Reddits}">
+                    <phone:LongListSelector.ItemTemplate>
+                        <DataTemplate toolkit:TiltEffect.IsTiltEnabled="True">
+                            <Grid>
+                                <TextBlock Text="reddits" Visibility="{Binding Header}" CharacterSpacing="-35" FontSize="66" FontFamily="{StaticResource PhoneFontFamilySemiLight}" HorizontalAlignment="Left" Margin="10,-16,0,26" />
+                                <Button Style="{StaticResource MainViewButton}" Visibility="{Binding Normal}" >
+                                    <Button.Content>
+                                        <StackPanel Orientation="Horizontal" Margin="{Binding Padding}">
+                                            <Grid VerticalAlignment="Center" Height="70" Width="50" Tap="FavoriteSubreddit_Tap" Background="#01000000">
+                                                <Image Source="{Binding favIcon}" Width="26" Height="25"></Image>
+                                            </Grid>
+                                            <StackPanel Margin="0,0,0,0" Width="420" Height="78" Tap="SubReddit_Tap">
+                                                <TextBlock Text="{Binding LineOne}" Margin="0" Style="{StaticResource PhoneTextExtraLargeStyle}"/>
+                                                <TextBlock Text="{Binding LineTwo}" Foreground="{Binding LineTwoColor}" toolkit:SlideInEffect.LineIndex="2" TextTrimming="WordEllipsis" MaxWidth="380" Margin="-20,-6,18,8" Style="{StaticResource PhoneTextSubtleStyle}"/>
+                                            </StackPanel>     
+                                        </StackPanel>
+                                    </Button.Content>
+                                </Button>
+                            </Grid>
+                        </DataTemplate>
+                    </phone:LongListSelector.ItemTemplate>
+                </phone:LongListSelector>
+            </controls:PanoramaItem>
+
+            <!--account-->
+            <controls:PanoramaItem Header="account">
+                <StackPanel Orientation="Vertical" Margin="0,-35,0,0">
+                    <StackPanel x:Name="LoggedInHolderUI" Margin="0,25,0,0" Visibility="Visible">
+                        <Button Style="{StaticResource MainViewButton}" Click="ViewMyProfile_Click">
+                            <Button.Content>
+                                <StackPanel Width="420">
+                                    <TextBlock Text="view profile" Style="{StaticResource PhoneTextExtraLargeStyle}" />
+                                    <TextBlock Text="karma, links, comments, etc." Margin="12,-6,12,4" Style="{StaticResource PhoneTextSubtleStyle}" />
+                                </StackPanel>
+                            </Button.Content>
+                        </Button>
+                        <Button Style="{StaticResource MainViewButton}" Click="Messages_Click">
+                            <Button.Content>
+                                <StackPanel Width="420">
+                                    <TextBlock x:Name="MessagesTitleUI" Text="messages" Style="{StaticResource PhoneTextExtraLargeStyle}" />
+                                    <TextBlock x:Name="MessagesSubTextUI" Text="no new messages" Margin="12,-6,12,4" Style="{StaticResource PhoneTextSubtleStyle}" />
+                                </StackPanel>
+                            </Button.Content>
+                        </Button>
+                        <Button Style="{StaticResource MainViewButton}" Click="ManageSubreddit_Click">
+                            <Button.Content>
+                                <StackPanel Width="420">
+                                    <TextBlock Text="subreddits" Style="{StaticResource PhoneTextExtraLargeStyle}" />
+                                    <TextBlock Text="add, remove, and explore" Margin="12,-6,12,4" Style="{StaticResource PhoneTextSubtleStyle}" />
+                                </StackPanel>
+                            </Button.Content>
+                        </Button>
+                        <Button Style="{StaticResource MainViewButton}" Click="SwitchAccounts_Click">
+                            <Button.Content>
+                                <StackPanel Width="420">
+                                    <TextBlock Text="switch account" Style="{StaticResource PhoneTextExtraLargeStyle}" />
+                                    <TextBlock x:Name="AccountSubText" Text="active account:" Margin="12,-6,12,4" Style="{StaticResource PhoneTextSubtleStyle}" />
+                                </StackPanel>
+                            </Button.Content>
+                        </Button>
+                    </StackPanel>
+                    
+                    <StackPanel Margin="0,25,0,0" x:Name="LoggedOutHolderUI" Visibility="Collapsed">
+                        <Button Style="{StaticResource MainViewButton}" Click="LogIn_Click">
+                            <Button.Content>
+                                <StackPanel Width="420">
+                                    <TextBlock Text="log in" Style="{StaticResource PhoneTextExtraLargeStyle}" />
+                                    <TextBlock Text="what's reddit without an account?" Margin="12,-6,12,4" Style="{StaticResource PhoneTextSubtleStyle}" />
+                                </StackPanel>
+                            </Button.Content>
+                        </Button>
+                        <Button Style="{StaticResource MainViewButton}" Click="ManageSubreddit_Click">
+                            <Button.Content>
+                                <StackPanel Width="420">
+                                    <TextBlock Text="subreddits" Style="{StaticResource PhoneTextExtraLargeStyle}" />
+                                    <TextBlock Text="add, remove, and explore" Margin="12,-6,12,4" Style="{StaticResource PhoneTextSubtleStyle}" />
+                                </StackPanel>
+                            </Button.Content>
+                        </Button>
+                    </StackPanel>
+                </StackPanel>
+            </controls:PanoramaItem>
+
+            <!--recent-->
+            <controls:PanoramaItem Header="recent" Orientation="Horizontal">
+                <Grid>
+                    <ItemsControl x:Name="RecentTiles" ItemsSource="{Binding RecentTiles}" Margin="0,0,24,0">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <toolkit:WrapPanel Orientation="Vertical"/>
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Button Width="173" Height="173" Margin="12,12,0,0" Background="{StaticResource PhoneAccentBrush}" Style="{StaticResource TileButtonTemplate}" Click="RecentTile_Click" >
+                                    <Button.Content>
+                                        <TextBlock Text="{Binding DisplayText}" Foreground="White" TextTrimming="WordEllipsis" Height="160" Margin="8" TextWrapping="Wrap" FontSize="22" FontFamily="{StaticResource PhoneFontFamilySemiBold}"></TextBlock>
+                                    </Button.Content>
+                                </Button>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                    <TextBlock x:Name="RecentNothingText" Text="Nothing here yet..." FontSize="25"  Margin="12" Style="{StaticResource PhoneTextSubtleStyle}" />
+                </Grid>
+            </controls:PanoramaItem>
+        </localControls:DynamicBackgroundPanorama>
+        
+        <!-- Main progress bar -->
+        <ProgressBar x:Name="LoadingBar" Background="Transparent" VerticalAlignment="Top" Width="480" />
+        
+        <StackPanel x:Name="FirstTimeOptions" Orientation="Vertical" Background="#EE000000" Visibility="Collapsed" >
+            <StackPanel x:Name="FirstTimeHolder">
+                <StackPanel.RenderTransform>
+                    <TranslateTransform/>
+                </StackPanel.RenderTransform>
+                <TextBlock Margin="24,36,20,20" Opacity="0" Text="Welcome to Baconit" FontSize="40" x:Name="FirstTimeTitle" >
+                    <TextBlock.RenderTransform>
+                        <CompositeTransform/>
+                    </TextBlock.RenderTransform>
+                </TextBlock>
+                <TextBlock Text="Keep Up To Date" Margin="24,0,0,12" FontSize="25" Opacity="0" x:Name="FirstTimeAutoTitle">
+                    <TextBlock.RenderTransform>
+                        <CompositeTransform/>
+                    </TextBlock.RenderTransform>
+                </TextBlock>
+                <TextBlock Text="Automatic updating allows Baconit to periodically update your live tiles and lock screen while the app isn't open." TextWrapping="Wrap" Margin="24,0,24,0" Style="{StaticResource PhoneTextSubtleStyle}" x:Name="FistTimeAutoText" Opacity="0">
+                    <TextBlock.RenderTransform>
+                        <CompositeTransform/>
+                    </TextBlock.RenderTransform>
+                </TextBlock>
+                <toolkit:ToggleSwitch Padding="12" x:Name="AutomaticUpdatingSwitch" Header="Automatic updating" CacheMode="BitmapCache" Opacity="0">
+                    <toolkit:ToggleSwitch.RenderTransform>
+                        <CompositeTransform/>
+                    </toolkit:ToggleSwitch.RenderTransform>
+                </toolkit:ToggleSwitch>
+                <TextBlock Text="Content Filter" Margin="24,0,0,12" FontSize="25" x:Name="FirstTimeContentTitle" Opacity="0">
+                    <TextBlock.RenderTransform>
+                        <CompositeTransform/>
+                    </TextBlock.RenderTransform>
+                </TextBlock>
+                <TextBlock Text="The content filter will filter profanity and hide adult content such as (NSFW) posts." TextWrapping="Wrap" Margin="24,0,24,0" Style="{StaticResource PhoneTextSubtleStyle}" x:Name="FirstTimeConentText" Opacity="0">
+                    <TextBlock.RenderTransform>
+                        <CompositeTransform/>
+                    </TextBlock.RenderTransform>
+                </TextBlock>
+                <toolkit:ToggleSwitch Padding="12" x:Name="AdultFilterSwitch" Header="Adult content filter " CacheMode="BitmapCache" Opacity="0">
+                    <toolkit:ToggleSwitch.RenderTransform>
+                        <CompositeTransform/>
+                    </toolkit:ToggleSwitch.RenderTransform>
+                </toolkit:ToggleSwitch>              
+
+                <Grid x:Name="CloseFirstTime" Margin="24,36,20,24" Background="{StaticResource PhoneAccentBrush}" Width="440" Tap="CloseFirstTime_Tap" toolkit:TiltEffect.IsTiltEnabled="True" Opacity="0">
+                    <Grid.RenderTransform>
+                        <CompositeTransform/>
+                    </Grid.RenderTransform>
+                    <TextBlock Foreground="White"  Text="done" FontSize="25" Margin="10" HorizontalAlignment="Center" />
+                </Grid>
+            </StackPanel>
+        </StackPanel>
+
+        <Grid x:Name="FirstTimeWait" Visibility="Collapsed" CacheMode="BitmapCache">
+            <Image x:Name="FirstUseImage"/>
+            <TextBlock x:Name="FirstUseText" Text="preparing for first use" VerticalAlignment="Center" Foreground="White" HorizontalAlignment="Center" Margin="0,290,0,0" />
+            <ProgressBar Background="Transparent" x:Name="FirstUseLoading" Width="Auto" VerticalAlignment="Center" Foreground="White" Margin="0,250,0,0"/>
+        </Grid>
+    </Grid>
+</phone:PhoneApplicationPage>

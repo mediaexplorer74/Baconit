@@ -1,0 +1,264 @@
+﻿<phone:PhoneApplicationPage 
+    x:Class="Baconit.MessageInbox"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:phone="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone"
+    xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.ToolkitCustom"
+    xmlns:local="clr-namespace:Baconit"
+    xmlns:sys="clr-namespace:System;assembly=mscorlib"
+    FontFamily="{StaticResource PhoneFontFamilyNormal}"
+    FontSize="{StaticResource PhoneFontSizeNormal}"
+    Foreground="{StaticResource PhoneForegroundBrush}"
+    SupportedOrientations="Portrait" Orientation="Portrait"
+    mc:Ignorable="d" d:DesignHeight="800" d:DesignWidth="480">
+
+    <!-- Better Progress Bar -->
+    <phone:PhoneApplicationPage.Resources>
+        <Storyboard x:Name="OpenReplyAn">
+            <DoubleAnimation Storyboard.TargetName="MessageActionButtonHolder"
+                             Storyboard.TargetProperty="Opacity" From="1.0"
+                             To="0" Duration="0:0:0.5" Completed="OpenReply_Completed"
+                             >
+                <DoubleAnimation.EasingFunction>
+                    <ExponentialEase EasingMode="EaseOut" Exponent="6"/>
+                </DoubleAnimation.EasingFunction>
+            </DoubleAnimation>
+            <DoubleAnimation Storyboard.TargetName="MessageActionReplyBox"
+                             Storyboard.TargetProperty="Opacity" From="0"
+                             To="1.0" Duration="0:0:0.5" >
+                <DoubleAnimation.EasingFunction>
+                    <ExponentialEase EasingMode="EaseOut" Exponent="6"/>
+                </DoubleAnimation.EasingFunction>
+            </DoubleAnimation>
+        </Storyboard>
+        
+        <Storyboard x:Name="CloseReplyAn">
+            <DoubleAnimation Storyboard.TargetName="MessageActionButtonHolder"
+                             Storyboard.TargetProperty="Opacity" From="0"
+                             To="1.0" Duration="0:0:0.5" Completed="CloseReply_Completed">
+                <DoubleAnimation.EasingFunction>
+                    <ExponentialEase EasingMode="EaseOut" Exponent="6"/>
+                </DoubleAnimation.EasingFunction>
+            </DoubleAnimation>
+            <DoubleAnimation Storyboard.TargetName="MessageActionReplyBox"
+                             Storyboard.TargetProperty="Opacity" From="1.0"
+                             To="0" Duration="0:0:0.5" >
+                <DoubleAnimation.EasingFunction>
+                    <ExponentialEase EasingMode="EaseOut" Exponent="6"/>
+                </DoubleAnimation.EasingFunction>
+            </DoubleAnimation>
+        </Storyboard>
+
+        <Storyboard x:Name="ShowSending">
+            <DoubleAnimation Storyboard.TargetName="SendingProgressOverlay"
+                             Storyboard.TargetProperty="Opacity" From="0"
+                             To="1.0" Duration="0:0:0.3" >
+                <DoubleAnimation.EasingFunction>
+                    <ExponentialEase EasingMode="EaseOut" Exponent="6"/>
+                </DoubleAnimation.EasingFunction>
+            </DoubleAnimation>
+        </Storyboard>
+        <Storyboard x:Name="HideSending">
+            <DoubleAnimation Storyboard.TargetName="SendingProgressOverlay"
+                             Storyboard.TargetProperty="Opacity" From="1.0"
+                             To="0" Duration="0:0:0.3" Completed="HideSending_Completed">
+                <DoubleAnimation.EasingFunction>
+                    <ExponentialEase EasingMode="EaseOut" Exponent="6"/>
+                </DoubleAnimation.EasingFunction>
+            </DoubleAnimation>
+        </Storyboard>   
+        
+        <Storyboard x:Name="ShowMessages">
+            <DoubleAnimation Storyboard.TargetName="MessageList"
+                             Storyboard.TargetProperty="Opacity" From="0"
+                             To="1.0" Duration="0:0:0.5" >
+                <DoubleAnimation.EasingFunction>
+                    <ExponentialEase EasingMode="EaseOut" Exponent="6"/>
+                </DoubleAnimation.EasingFunction>
+            </DoubleAnimation>
+        </Storyboard>
+
+        <Storyboard x:Name="OpenMessageActionAnm">
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)"
+                Storyboard.TargetName="MessageActionPanel">
+                <EasingDoubleKeyFrame KeyTime="0" Value="200"/>
+                <EasingDoubleKeyFrame KeyTime="0:0:0.7" Value="0">
+                    <EasingDoubleKeyFrame.EasingFunction>
+                        <ExponentialEase EasingMode="EaseOut" Exponent="6"/>
+                    </EasingDoubleKeyFrame.EasingFunction>
+                </EasingDoubleKeyFrame>
+            </DoubleAnimationUsingKeyFrames>
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Opacity)"
+                Storyboard.TargetName="MessageActionPanel">
+                <EasingDoubleKeyFrame KeyTime="0" Value="0"/>
+                <EasingDoubleKeyFrame KeyTime="0:0:0.7" Value="1">
+                    <EasingDoubleKeyFrame.EasingFunction>
+                        <ExponentialEase EasingMode="EaseOut" Exponent="6"/>
+                    </EasingDoubleKeyFrame.EasingFunction>
+                </EasingDoubleKeyFrame>
+            </DoubleAnimationUsingKeyFrames>
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Opacity)"
+                Storyboard.TargetName="BlackBackground">
+                <EasingDoubleKeyFrame KeyTime="0" Value="0"/>
+                <EasingDoubleKeyFrame KeyTime="0:0:0.7" Value="1">
+                    <EasingDoubleKeyFrame.EasingFunction>
+                        <ExponentialEase EasingMode="EaseOut" Exponent="6"/>
+                    </EasingDoubleKeyFrame.EasingFunction>
+                </EasingDoubleKeyFrame>
+            </DoubleAnimationUsingKeyFrames>
+        </Storyboard>
+        <Storyboard x:Name="CloseMessageActionAnm">
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)"
+                                           Storyboard.TargetName="MessageActionPanel">
+                <EasingDoubleKeyFrame KeyTime="0" Value="0"/>
+                <EasingDoubleKeyFrame KeyTime="0:0:0.4" Value="200">
+                    <EasingDoubleKeyFrame.EasingFunction>
+                        <ExponentialEase EasingMode="EaseOut" Exponent="6"/>
+                    </EasingDoubleKeyFrame.EasingFunction>
+                </EasingDoubleKeyFrame>
+            </DoubleAnimationUsingKeyFrames>
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Opacity)"
+                                           Storyboard.TargetName="MessageActionPanel">
+                <EasingDoubleKeyFrame KeyTime="0" Value="1"/>
+                <EasingDoubleKeyFrame KeyTime="0:0:0.4" Value="0">
+                    <EasingDoubleKeyFrame.EasingFunction>
+                        <ExponentialEase EasingMode="EaseOut" Exponent="6"/>
+                    </EasingDoubleKeyFrame.EasingFunction>
+                </EasingDoubleKeyFrame>
+            </DoubleAnimationUsingKeyFrames>
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Opacity)"
+                                           Storyboard.TargetName="BlackBackground">
+                <EasingDoubleKeyFrame KeyTime="0" Value="1"/>
+                <EasingDoubleKeyFrame KeyTime="0:0:0.4" Value="0">
+                    <EasingDoubleKeyFrame.EasingFunction>
+                        <ExponentialEase EasingMode="EaseOut" Exponent="6"/>
+                    </EasingDoubleKeyFrame.EasingFunction>
+                </EasingDoubleKeyFrame>
+            </DoubleAnimationUsingKeyFrames>
+        </Storyboard>       
+    </phone:PhoneApplicationPage.Resources >
+
+    <!--LayoutRoot is the root grid where all page content is placed-->
+    <Grid x:Name="LayoutRoot" Background="Transparent">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <!--TitlePanel contains the name of the application and page title-->
+            <StackPanel x:Name="TitlePanel" Grid.Row="0" Margin="12,24,0,15">
+                <TextBlock x:Name="ApplicationTitle" toolkit:TurnstileFeatherEffect.FeatheringIndex="0" FontSize="22" Margin="0" Text="MESSAGE INBOX" Style="{StaticResource PhoneTextNormalStyle}"/>
+                <toolkit:ListPicker Margin="0,0,12,0" toolkit:TurnstileFeatherEffect.FeatheringIndex="1" x:Name="MessageFilter" SelectionChanged="MessageFilter_SelectionChanged">
+                    <sys:String>all</sys:String>
+                    <sys:String>unread</sys:String>
+                    <sys:String>messages</sys:String>
+                    <sys:String>comment replies</sys:String>
+                    <sys:String>post replies</sys:String>       
+                    <toolkit:ListPicker.FullModeItemTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal" Margin="16 15 0 15">
+                                <TextBlock Text="{Binding}" Margin="16 0 0 0" FontSize="43" FontFamily="{StaticResource PhoneFontFamilyLight}"/>
+                            </StackPanel>
+                        </DataTemplate>
+                    </toolkit:ListPicker.FullModeItemTemplate>
+                </toolkit:ListPicker>          
+            </StackPanel>
+        
+            <Grid x:Name="ContentPanel" Grid.Row="1" Margin="12,0,12,0">
+                <StackPanel Orientation="Vertical">
+                    <ListBox x:Name="MessageList" toolkit:TurnstileFeatherEffect.FeatheringIndex="2" Visibility="Collapsed" Height="596" ItemsSource="{Binding MessageUIList}" SelectionChanged="MessageList_SelectionChanged">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <Grid x:Name="MessageHolder" Margin="0,6,0,18">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="4" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+                                    <Rectangle Grid.Column="0" Margin="0,0,0,0" Fill="{Binding BarColor}" ></Rectangle>
+                                    <StackPanel Grid.Column="1">
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock Margin="12,-8,0,0" Text="{Binding FirstLineAccent}" MaxWidth="330" TextTrimming="WordEllipsis"  Foreground="{StaticResource PhoneAccentBrush}" Style="{StaticResource PhoneTextNormalStyle}"/>
+                                            <TextBlock Margin="0,-8,10,0" Text="{Binding FirstLineNormal}" Style="{StaticResource PhoneTextSubtleStyle}" TextWrapping="NoWrap" TextTrimming="WordEllipsis"/>
+                                        </StackPanel>
+                                        <TextBlock Margin="12,0,5,-3" Text="{Binding Content}" MaxHeight="107" TextTrimming="WordEllipsis" TextWrapping="Wrap" Style="{StaticResource PhoneTextNormalStyle}" HorizontalAlignment="Left" />
+                                    </StackPanel>
+                                </Grid>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+
+                    <StackPanel x:Name="NoMessagesUI"  Visibility="Visible" toolkit:TurnstileFeatherEffect.FeatheringIndex="2">
+                        <TextBlock x:Name="NoMessagesTextOneUI" Text="loading inbox" Margin="0,12,0,0" Style="{StaticResource PhoneTextLargeStyle}" Foreground="{StaticResource PhoneSubtleBrush}"/>
+                    </StackPanel>
+                </StackPanel>
+            </Grid>
+        </Grid>
+
+        <Grid x:Name="BlackBackground" Background="#EE000000" Visibility="Collapsed" />
+        <Grid x:Name="MessageActionPanel" Height="800" Width="480" Visibility="Collapsed">
+            <Grid.RenderTransform>
+                <TranslateTransform/>
+            </Grid.RenderTransform>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>   
+            </Grid.RowDefinitions>
+            <TextBlock Grid.Row="0" Margin="12,20,20,20" Text="MESSAGE DETAILS" FontSize="40" />
+            <ScrollViewer Grid.Row="1" Margin="0,0,0,0" HorizontalAlignment="Stretch">
+                <StackPanel x:Name="MessageActionPanelConentHolder" Margin="12,0,12,0" Orientation="Vertical" Background="#DD000000" HorizontalAlignment="Stretch" >    
+                    <TextBlock x:Name="MessageActionLineOneOne" Margin="0,0,0,0" TextWrapping="Wrap" Text="Te djakfl dj lkajfd ajlkdjfla fjd klaj fjsdal kfjd ljlkd faljdl alfj dl st" Foreground="{StaticResource PhoneAccentBrush}" Style="{StaticResource PhoneTextNormalStyle}"/>
+                    <TextBlock x:Name="MessageActionLineOneTwo" Margin="0,0,0,0" MaxHeight="30" Text="fjkldaf j dafj daklfjlak jflkdaj ljdflakfjd lafj dllkda jldaj djf;a fjk" Style="{StaticResource PhoneTextSubtleStyle}" TextWrapping="NoWrap" TextTrimming="WordEllipsis"/>
+                    <local:SuperRichTextBox x:Name="MessageActionMessageContent" Margin="0" Padding="0" Foreground="White" HorizontalAlignment="Left" />   
+                </StackPanel>
+            </ScrollViewer>
+            <Grid Grid.Row="2">
+                <StackPanel x:Name="MessageActionButtonHolder" Margin="0,0,0,12" Orientation="Vertical" Visibility="Visible">
+                    <Grid x:Name="markRead" Margin="12" Background="{StaticResource PhoneAccentBrush}" Tap="markRead_Tap">
+                        <TextBlock x:Name="markReadText" Text="mark as read" FontSize="25" Margin="10" HorizontalAlignment="Center" />
+                    </Grid>
+                    <Grid x:Name="reply" Margin="12" Background="{StaticResource PhoneAccentBrush}" Tap="reply_Tap">
+                        <TextBlock Text="reply..." FontSize="25" Margin="10" HorizontalAlignment="Center" />
+                    </Grid>
+                    <Grid x:Name="EditButtons">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        
+                        <Grid Grid.Column="0" x:Name="openContext" Margin="12" Background="{StaticResource PhoneAccentBrush}" Tap="openContext_Tap">
+                            <TextBlock x:Name="openContextText" Text="view context" FontSize="25" Margin="10" HorizontalAlignment="Center" />
+                        </Grid>
+                        <Grid Grid.Column="1" x:Name="profileButton" Margin="12" Background="{StaticResource PhoneAccentBrush}" Tap="profileButton_Tap">
+                            <TextBlock x:Name="openprofileText" Text="profile" FontSize="25" Margin="10" HorizontalAlignment="Center" />
+                        </Grid>
+                    </Grid>
+                </StackPanel>
+
+                <StackPanel x:Name="MessageActionReplyBox" Orientation="Vertical" Visibility="Collapsed">
+                    <ScrollViewer x:Name="ReplyScroller" VerticalScrollBarVisibility="Visible">
+                        <TextBox x:Name="ReplyText" Width="Auto" MinHeight="175" TextWrapping="Wrap" FontSize="22" TextChanged="ReplyText_TextChanged" InputScope="Text" AcceptsReturn="True"/>
+                    </ScrollViewer>                   
+                    <Grid HorizontalAlignment="Center">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Button Content="submit" Width="240" FontSize="22" x:Name="ReplySubmit" Click="ReplySubmit_Click" ></Button>
+                        <Button Grid.Column="1" Content="cancel" Width="240" FontSize="22" x:Name="ReplyClose" Click="ReplyClose_Click"></Button>
+                    </Grid>
+                </StackPanel>
+                <Grid x:Name="SendingProgressOverlay" Background="#DD222222" Visibility="Collapsed">
+                    <TextBlock x:Name="LoadingText" Text="Sending Reply..." VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,00,0,0"/>
+                    <ProgressBar Background="Transparent"  x:Name="SendingProgressBar" Width="Auto" VerticalAlignment="Center" Margin="-0,-50,0,0"/>                    
+                </Grid>
+            </Grid>
+        </Grid>
+
+        <ProgressBar Background="Transparent" x:Name="InboxLoadingProgressBar" HorizontalContentAlignment="Stretch" VerticalAlignment="Top" Margin="0,0,0,0"/>
+    </Grid>
+</phone:PhoneApplicationPage>

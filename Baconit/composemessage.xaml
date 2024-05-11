@@ -1,0 +1,55 @@
+﻿<phone:PhoneApplicationPage 
+    x:Class="Baconit.ComposeMessage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:phone="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone"
+    xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.ToolkitCustom"
+    FontFamily="{StaticResource PhoneFontFamilyNormal}"
+    FontSize="{StaticResource PhoneFontSizeNormal}"
+    Foreground="{StaticResource PhoneForegroundBrush}"  
+    SupportedOrientations="PortraitOrLandscape" Orientation="Portrait"
+    mc:Ignorable="d" d:DesignHeight="800" d:DesignWidth="480"
+    OrientationChanged="PhoneApplicationPage_OrientationChanged"
+    shell:SystemTray.IsVisible="True" shell:SystemTray.Opacity="0">
+
+    <!--LayoutRoot is the root grid where all page content is placed-->
+    <Grid x:Name="LayoutRoot" Background="Transparent" Margin="0,32,0,0">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!--TitlePanel contains the name of the application and page title-->
+        <StackPanel x:Name="TitlePanel" Grid.Row="0" Margin="12,17,0,28">
+            <TextBlock toolkit:TurnstileFeatherEffect.FeatheringIndex="0" x:Name="ApplicationTitle" Text="COMPOSE MESSAGE" Style="{StaticResource PhoneTextNormalStyle}"/>
+            
+        </StackPanel>
+
+        <!--ContentPanel - place additional content here-->
+        <Grid x:Name="ContentPanel" Grid.Row="1" Margin="0">
+            <!--ContentPanel - place additional content here-->
+            <ScrollViewer x:Name="ContentScroller" Grid.Row="1">
+                <StackPanel  Margin="12,0,12,0" SizeChanged="StackPanel_SizeChanged">
+                    <TextBlock toolkit:TurnstileFeatherEffect.FeatheringIndex="1" HorizontalAlignment="Left" Margin="12,15,0,0" Text="to" VerticalAlignment="Top" Style="{StaticResource PhoneTextLargeStyle}" />
+                    <TextBox toolkit:TurnstileFeatherEffect.FeatheringIndex="1" x:Name="ToTextBox" Margin="0,6,0,0"  InputScope="Text" TextWrapping="Wrap" TextChanged="ToTextBox_TextChanged"></TextBox>
+
+                    <TextBlock toolkit:TurnstileFeatherEffect.FeatheringIndex="2" HorizontalAlignment="Left" Margin="12,20,0,0" Text="subject" VerticalAlignment="Top" Style="{StaticResource PhoneTextLargeStyle}" />
+                    <TextBox toolkit:TurnstileFeatherEffect.FeatheringIndex="2" x:Name="SubjectTextBox" Margin="0,8,0,0"  InputScope="Text" TextChanged="SubjectTextBox_TextChanged"></TextBox>
+
+                    <TextBlock toolkit:TurnstileFeatherEffect.FeatheringIndex="3" HorizontalAlignment="Left" Margin="12,20,0,0" Text="message" VerticalAlignment="Top" Style="{StaticResource PhoneTextLargeStyle}" />
+                    <TextBox toolkit:TurnstileFeatherEffect.FeatheringIndex="3" x:Name="MessageTextBox" Margin="0,8,0,0" MinHeight="150" InputScope="Text" TextChanged="MessageTextBox_TextChanged" TextWrapping="Wrap" AcceptsReturn="True"></TextBox>
+
+                    <!--<TextBlock Visibility="Collapsed" x:Name="FormattedPreviewText" HorizontalAlignment="Left" Margin="12" Text="Formatted Preview:" VerticalAlignment="Top" Style="{StaticResource PhoneTextSubtleStyle}" />
+                    <RichTextBox Visibility="Collapsed" x:Name="FormattedPreview" Margin="0,0,0,18" Foreground="White"/>
+                    <TextBlock HorizontalAlignment="Left" Margin="12,8,0,0" Text="subreddit" VerticalAlignment="Top" Style="{StaticResource PhoneTextLargeStyle}" />-->
+
+                    <Grid Margin="6" toolkit:TurnstileFeatherEffect.FeatheringIndex="4"></Grid>
+                    <!--<toolkit:AutoCompleteBox  x:Name="SubReddit" InputScope="Text"></toolkit:AutoCompleteBox>-->
+                </StackPanel>
+            </ScrollViewer>
+        </Grid>
+    </Grid>
+</phone:PhoneApplicationPage>

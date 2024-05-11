@@ -1,0 +1,56 @@
+﻿<Page
+    x:Class="Baconit.AccountChooser"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Baconit"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!--TitlePanel contains the name of the application and page title-->
+        <StackPanel x:Name="TitlePanel" Grid.Row="0" Margin="12,17,0,28">
+            <TextBlock x:Name="ApplicationTitle" 
+                       Text="ACCOUNTS"/>
+
+        </StackPanel>
+
+        <!--ContentPanel - place additional content here-->
+        <Grid x:Name="ContentPanel" Grid.Row="1" Margin="0">
+            <ListBox x:Name="AccountListUI" 
+                     Margin="12" ItemsSource="{Binding Accounts}" 
+                     SelectionChanged="AccountListUI_SelectionChanged">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel  Margin="0,12,12,12" >
+                            <TextBlock Text="{Binding UserName}" 
+                                      Foreground="{Binding TitleColor}" />
+                            <TextBlock Text="{Binding DateString}" 
+                                       Margin="12,0,12,4" />
+                            <!--toolkit:ContextMenuService.ContextMenu>
+                                <toolkit:ContextMenu>
+                                    <toolkit:MenuItem Header="remove" Click="remove_Click" />
+                                </toolkit:ContextMenu>
+                            </toolkit:ContextMenuService.ContextMenu-->
+                        </StackPanel>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </Grid>
+
+        <Grid x:Name="FullScreenLoading" Visibility="Collapsed" Height="800">
+            <Rectangle x:Name="FullScreenLoadingBack" Fill="#BB000000" Width="Auto" Height="Auto" />
+            <TextBlock Text="Logging Out..." VerticalAlignment="Center" HorizontalAlignment="Center" 
+                       Margin="0,30,0,0" />
+            <ProgressBar x:Name="LoggingOutProgress" Background="Transparent"  
+                         Width="Auto" VerticalAlignment="Center" Margin="0,0,0,30"/>
+        </Grid>
+
+    </Grid>
+</Page>

@@ -1,0 +1,66 @@
+﻿<phone:PhoneApplicationPage 
+    x:Class="Baconit.SettingPages.Credits"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:phone="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone"
+    xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.ToolkitCustom"
+    FontFamily="{StaticResource PhoneFontFamilyNormal}"
+    FontSize="{StaticResource PhoneFontSizeNormal}"
+    Foreground="{StaticResource PhoneForegroundBrush}"
+    SupportedOrientations="Portrait" Orientation="Portrait"
+    mc:Ignorable="d" d:DesignHeight="800" d:DesignWidth="480"
+    shell:SystemTray.IsVisible="false">
+
+    <phone:PhoneApplicationPage.Resources>
+        <Style x:Key="MainViewButton" TargetType="Button">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Grid Background="Transparent">
+                            <VisualStateManager.VisualStateGroups>
+                                <VisualStateGroup x:Name="CommonStates">
+                                    <VisualState x:Name="Normal"/>
+                                    <VisualState x:Name="MouseOver"/>
+                                    <VisualState x:Name="Pressed" />
+                                    <VisualState x:Name="Disabled" />
+                                </VisualStateGroup>
+                            </VisualStateManager.VisualStateGroups>
+                            <Border x:Name="ButtonBackground" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="0" CornerRadius="0" Margin="0" Background="Transparent">
+                                <ContentControl x:Name="ContentContainer" ContentTemplate="{TemplateBinding ContentTemplate}" Content="{TemplateBinding Content}" Foreground="{TemplateBinding Foreground}" HorizontalAlignment="Left" Padding="0"/>
+                            </Border>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </phone:PhoneApplicationPage.Resources>
+
+    <!--LayoutRoot is the root grid where all page content is placed-->
+    <Grid x:Name="LayoutRoot" Background="Transparent">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!--TitlePanel contains the name of the application and page title-->
+        <StackPanel x:Name="TitlePanel" Grid.Row="0" Margin="12,17,0,28">
+            <TextBlock toolkit:TurnstileFeatherEffect.FeatheringIndex="0" x:Name="ApplicationTitle" Text="BACONIT" Style="{StaticResource PhoneTextNormalStyle}"/>
+            <TextBlock toolkit:TurnstileFeatherEffect.FeatheringIndex="1" x:Name="PageTitle" Text="credits" Margin="9,-7,0,0" Style="{StaticResource PhoneTextTitle1Style}"/>
+        </StackPanel>
+
+        <!--ContentPanel - place additional content here-->
+        <Grid x:Name="ContentPanel" Grid.Row="1" Margin="12,0,12,0">
+            <StackPanel>
+                <TextBlock toolkit:TurnstileFeatherEffect.FeatheringIndex="2" Text="Parts of Baconit are made possible by the amazing work the following projects and people. Baconit would not be nearly as awesome without them, so show them some love!&#13;&#13;&lt;3 Baconit" TextWrapping="Wrap" Margin="12"/>
+                <Button toolkit:TurnstileFeatherEffect.FeatheringIndex="3" Content="Microsoft Silverlight Toolkit" Style="{StaticResource MainViewButton}" Margin="12,30,20,20"  FontSize="22" Foreground="{StaticResource PhoneAccentBrush}" Click="Button_Click"></Button>
+                <Button toolkit:TurnstileFeatherEffect.FeatheringIndex="4" Content="JSON.NET Libaray" Style="{StaticResource MainViewButton}" Margin="12,20,20,20" FontSize="22" Foreground="{StaticResource PhoneAccentBrush}"  Click="Button_Click_1"></Button>
+                <Button toolkit:TurnstileFeatherEffect.FeatheringIndex="5" Content="ImageTools for Silverlight" Style="{StaticResource MainViewButton}" Margin="12,20,20,20" FontSize="22" Foreground="{StaticResource PhoneAccentBrush}"  Click="Button_Click_2"></Button>
+                <Button toolkit:TurnstileFeatherEffect.FeatheringIndex="6" Content="Gzip by David Anson" Style="{StaticResource MainViewButton}" Margin="12,20,20,20" FontSize="22" Foreground="{StaticResource PhoneAccentBrush}"  Click="Button_Click_3"></Button>
+                <Button toolkit:TurnstileFeatherEffect.FeatheringIndex="6" Content="Optimization by Readability" Style="{StaticResource MainViewButton}" Margin="12,20,20,20" FontSize="22" Foreground="{StaticResource PhoneAccentBrush}"  Click="Button_Click_4"></Button>
+            </StackPanel>
+        </Grid>
+    </Grid>
+</phone:PhoneApplicationPage>

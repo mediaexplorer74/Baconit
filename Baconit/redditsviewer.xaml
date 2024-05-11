@@ -1,0 +1,454 @@
+﻿<phone:PhoneApplicationPage 
+    x:Class="Baconit.RedditsViewer"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:phone="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone"
+    xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
+    xmlns:controls="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.ToolkitCustom"
+    xmlns:local="clr-namespace:Baconit"
+    mc:Ignorable="d" d:DesignWidth="480" d:DesignHeight="768"
+    FontFamily="{StaticResource PhoneFontFamilyNormal}"
+    FontSize="{StaticResource PhoneFontSizeNormal}"
+    Foreground="{StaticResource PhoneForegroundBrush}"
+    shell:SystemTray.IsVisible="True" shell:SystemTray.Opacity="0"
+    SupportedOrientations="PortraitOrLandscape"
+    OrientationChanged="RedditViewer_OrientationChanged"
+    SizeChanged="PhoneApplicationPage_SizeChanged"
+    toolkit:TiltEffect.IsTiltEnabled="True">
+
+    <!-- Better Progress Bar -->
+    <phone:PhoneApplicationPage.Resources>
+         <Storyboard x:Name="FadeOutTips">
+            <DoubleAnimation
+                Storyboard.TargetName="StoryHelpOverlay"
+                Storyboard.TargetProperty="Opacity"
+                From="1.0" To="0.0" Duration="0:0:0.3" />
+        </Storyboard>
+        <Storyboard x:Name="FadeInTips">
+            <DoubleAnimation
+                Storyboard.TargetName="StoryHelpOverlay"
+                Storyboard.TargetProperty="Opacity"
+                From="0.0" To="1.0" Duration="0:0:0.3" />
+        </Storyboard>
+
+        <Storyboard x:Name="FadeOutLoading">
+            <DoubleAnimation
+                Storyboard.TargetName="LoadingSubreddit"
+                Storyboard.TargetProperty="Opacity"
+                From="1.0" To="0.0" Duration="0:0:0.3" Completed="LoadingFade_Complete" />
+        </Storyboard>
+
+        <Style x:Key="ItemAnimations" TargetType="ListBoxItem">
+             <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+            <Setter Property="HorizontalAlignment" Value="Stretch" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ListBoxItem">
+                        <Border x:Name="LayoutRoot" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" HorizontalAlignment="{TemplateBinding HorizontalAlignment}" VerticalAlignment="{TemplateBinding VerticalAlignment}">
+                            <VisualStateManager.VisualStateGroups>                               
+                                <VisualStateGroup x:Name="LayoutStates">
+                                    <VisualStateGroup.Transitions>
+                                        <VisualTransition GeneratedDuration="0:0:0.75">
+                                            <VisualTransition.GeneratedEasingFunction>
+                                                <BackEase EasingMode="EaseInOut"/>
+                                            </VisualTransition.GeneratedEasingFunction>
+                                        </VisualTransition>
+                                    </VisualStateGroup.Transitions>
+                                    <VisualState x:Name="AfterLoaded">
+                                        <Storyboard>
+                                            <DoubleAnimation Duration="0" To="0" Storyboard.TargetProperty="(UIElement.Projection).(PlaneProjection.CenterOfRotationY)" Storyboard.TargetName="ContentContainer" d:IsOptimized="True"/>
+                                            <DoubleAnimation Duration="0" To="0" Storyboard.TargetProperty="(UIElement.Projection).(PlaneProjection.CenterOfRotationX)" Storyboard.TargetName="ContentContainer" d:IsOptimized="True"/>
+                                        </Storyboard>
+                                    </VisualState>
+                                    <VisualState x:Name="BeforeLoaded">
+                                        <Storyboard>
+                                            <DoubleAnimation Duration="0" To="0" Storyboard.TargetProperty="(UIElement.Projection).(PlaneProjection.RotationX)" Storyboard.TargetName="ContentContainer" d:IsOptimized="True"/>
+                                            <DoubleAnimation Duration="0" To="0" Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="ContentContainer" d:IsOptimized="True"/>
+                                            <DoubleAnimation Duration="0" To="0" Storyboard.TargetProperty="(UIElement.Projection).(PlaneProjection.CenterOfRotationY)" Storyboard.TargetName="ContentContainer" d:IsOptimized="True"/>
+                                            <DoubleAnimation Duration="0" To="0" Storyboard.TargetProperty="(UIElement.Projection).(PlaneProjection.CenterOfRotationX)" Storyboard.TargetName="ContentContainer" d:IsOptimized="True"/>
+                                            <DoubleAnimation Duration="0" To="0" Storyboard.TargetProperty="(UIElement.Projection).(PlaneProjection.RotationZ)" Storyboard.TargetName="ContentContainer" d:IsOptimized="True"/>
+                                            <DoubleAnimation Duration="0" To="330" Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.TranslateX)" Storyboard.TargetName="ContentContainer" d:IsOptimized="True"/>
+                                        </Storyboard>
+                                    </VisualState>
+                                    <VisualState x:Name="BeforeUnloaded"/>
+                                </VisualStateGroup>                               
+                            </VisualStateManager.VisualStateGroups>
+                            <ContentControl x:Name="ContentContainer" ContentTemplate="{TemplateBinding ContentTemplate}" Content="{TemplateBinding Content}" Foreground="{TemplateBinding Foreground}" HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding Padding}" VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" Background="Black" RenderTransformOrigin="0.5,0.5">
+                                <ContentControl.RenderTransform>
+                                    <CompositeTransform/>
+                                </ContentControl.RenderTransform>
+                                <ContentControl.Projection>
+                                    <PlaneProjection/>
+                                </ContentControl.Projection>
+                            </ContentControl>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="MainViewButton" TargetType="Button">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Grid Background="Transparent">
+                            <VisualStateManager.VisualStateGroups>
+                                <VisualStateGroup x:Name="CommonStates">
+                                    <VisualState x:Name="Normal"/>
+                                    <VisualState x:Name="MouseOver"/>
+                                    <VisualState x:Name="Pressed" />
+                                    <VisualState x:Name="Disabled" />
+                                </VisualStateGroup>
+                            </VisualStateManager.VisualStateGroups>
+                            <Border x:Name="ButtonBackground" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="0" CornerRadius="0" Margin="0" Background="Transparent">
+                                <ContentControl x:Name="ContentContainer" ContentTemplate="{TemplateBinding ContentTemplate}" Content="{TemplateBinding Content}" Foreground="{TemplateBinding Foreground}" HorizontalAlignment="Left" Padding="0"/>
+                            </Border>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <DataTemplate x:Key="ListViewItemDataTemplate">
+            <Grid Visibility="{Binding StoryReadVis}">
+                <Grid Margin="0,0,6,30" Visibility="{Binding StoryVisible}" Background="Transparent">
+                    <Grid.RenderTransform>
+                        <CompositeTransform/>
+                    </Grid.RenderTransform>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="55"></ColumnDefinition>
+                        <ColumnDefinition Width="*"></ColumnDefinition>
+                        <ColumnDefinition Width="Auto"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                    <StackPanel toolkit:SlideInEffect.LineIndex="1" Grid.Column="0" Orientation="Vertical" Margin="0,0,0,0" VerticalAlignment="Top" Width="55">
+                        <StackPanel Tap="UpVoteButton_Tap" Margin="-12,0,0,0" Background="#00000000">
+                            <StackPanel Orientation="Vertical" Width="45" Height="44" Margin="10,0,0,13" HorizontalAlignment="Left" >
+                                <Polygon Points="0,28 30,28 15,7" Fill="{Binding UpVoteColor}" HorizontalAlignment="Center"/>
+                                <Rectangle Height="12" Width="10"  Fill="{Binding UpVoteColor}" HorizontalAlignment="Center"></Rectangle>
+                            </StackPanel>
+                        </StackPanel>
+                        <TextBlock Text="{Binding score}" Style="{StaticResource PhoneTextNormalStyle}" HorizontalAlignment="Center"  Margin="0,-13,12,0" />
+                        <StackPanel Tap="DownVoteButton_Tap" Margin="-12,-13,0,0" Background="#00000000">
+                            <StackPanel Orientation="Vertical" Width="45" Height="40" Tap="DownVoteButton_Tap" Margin="0,13,0,0">
+                                <Rectangle Height="12" Width="10" Margin="0,6,0,0"  Fill="{Binding DownVoteColor}" HorizontalAlignment="Center"></Rectangle>
+                                <Polygon Points="0,0 30,0 15,21"  Fill="{Binding DownVoteColor}" HorizontalAlignment="Center"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </StackPanel>
+                    <StackPanel Grid.Column="1" Orientation="Vertical" Margin="0,0,0,0" HorizontalAlignment="Stretch" toolkit:SlideInEffect.LineIndex="2">
+                        <TextBlock Text="{Binding Title}" TextWrapping="Wrap" FontSize="23" MaxHeight="{Binding MaxTitleHeight}" Style="{StaticResource PhoneTextNormalStyle}" HorizontalAlignment="Left" Tap="StoryTitle_Tap" Margin="0,0,10,0" Foreground="{Binding TitleColor}" />
+                        <TextBlock Text="{Binding LineOne}"  Height="27" TextTrimming="WordEllipsis" Style="{StaticResource PhoneTextSubtleStyle}" HorizontalAlignment="Left" Margin="0,0,10,0" Tap="GoToDetails_Tap"/>
+                        <StackPanel Orientation="Horizontal" Margin="0,0,10,0" HorizontalAlignment="Left" Tap="GoToDetails_Tap">
+                            <TextBlock Text="{Binding NewCommentsText}"  Height="27" Margin="0" Foreground="{Binding NewCommentsTextColor}" Style="{StaticResource PhoneTextSubtleStyle}"/>
+                            <TextBlock Text="{Binding LineTwo}" Height="27" Margin="0" TextTrimming="WordEllipsis" Foreground="{StaticResource PhoneAccentBrush}" Style="{StaticResource PhoneTextSubtleStyle}"/>
+                        </StackPanel>
+                    </StackPanel>
+                    <StackPanel toolkit:SlideInEffect.LineIndex="3" Grid.Column="2" Background="{StaticResource PhoneAccentBrush}" Margin="0,8,0,0" VerticalAlignment="Top" Visibility="{Binding ThumbnailVis}" Tap="StoryTitle_Tap" >
+                        <Image Source="{Binding Thumbnail}" Margin="3,3,3,3" Width="70" HorizontalAlignment="Right"></Image>
+                    </StackPanel>
+                    <toolkit:ContextMenuService.ContextMenu>
+                        <toolkit:ContextMenu>
+                            <toolkit:MenuItem Header="{Binding SaveStoryText}" Click="saveStory_Click"/>
+                            <toolkit:MenuItem Header="hide story" Click="hideStory_Click"/>
+                            <toolkit:MenuItem Header="open into flip view" Click="OpenIntoFlipView_Click"/>
+                            <toolkit:MenuItem Header="go to subreddit" Click="GoToSubreddit_Click" Visibility="{Binding GoToSubRedditVis}"/>
+                        </toolkit:ContextMenu>
+                    </toolkit:ContextMenuService.ContextMenu>
+                </Grid>
+            </Grid>
+        </DataTemplate>
+
+        <Style x:Key="HotScrollBarListBox" TargetType="ListBox">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="{StaticResource PhoneForegroundBrush}"/>
+            <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled"/>
+            <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="BorderBrush" Value="Transparent"/>
+            <Setter Property="Padding" Value="0"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ListBox">
+                        <ScrollViewer x:Name="scrollViewer" 
+                              BorderBrush="{TemplateBinding BorderBrush}" 
+                              BorderThickness="{TemplateBinding BorderThickness}" 
+                              Background="{TemplateBinding Background}" 
+                              Foreground="{TemplateBinding Foreground}" 
+                              Padding="{TemplateBinding Padding}" 
+                              Loaded="hotViewer_Loaded">
+                            <ItemsPresenter/>
+                        </ScrollViewer>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="NewScrollBarListBox" TargetType="ListBox">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="{StaticResource PhoneForegroundBrush}"/>
+            <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled"/>
+            <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="BorderBrush" Value="Transparent"/>
+            <Setter Property="Padding" Value="0"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ListBox">
+                        <ScrollViewer x:Name="scrollViewer" 
+                              BorderBrush="{TemplateBinding BorderBrush}" 
+                              BorderThickness="{TemplateBinding BorderThickness}" 
+                              Background="{TemplateBinding Background}" 
+                              Foreground="{TemplateBinding Foreground}" 
+                              Padding="{TemplateBinding Padding}" 
+                              Loaded="newViewer_Loaded">
+                            <ItemsPresenter/>
+                        </ScrollViewer>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="TopScrollBarListBox" TargetType="ListBox">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="{StaticResource PhoneForegroundBrush}"/>
+            <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled"/>
+            <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="BorderBrush" Value="Transparent"/>
+            <Setter Property="Padding" Value="0"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ListBox">
+                        <ScrollViewer x:Name="scrollViewer" 
+                              BorderBrush="{TemplateBinding BorderBrush}" 
+                              BorderThickness="{TemplateBinding BorderThickness}" 
+                              Background="{TemplateBinding Background}" 
+                              Foreground="{TemplateBinding Foreground}" 
+                              Padding="{TemplateBinding Padding}" 
+                              Loaded="topViewer_Loaded">
+                            <ItemsPresenter/>
+                        </ScrollViewer>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="ConvScrollBarListBox" TargetType="ListBox">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="{StaticResource PhoneForegroundBrush}"/>
+            <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled"/>
+            <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="BorderBrush" Value="Transparent"/>
+            <Setter Property="Padding" Value="0"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ListBox">
+                        <ScrollViewer x:Name="scrollViewer" 
+                              BorderBrush="{TemplateBinding BorderBrush}" 
+                              BorderThickness="{TemplateBinding BorderThickness}" 
+                              Background="{TemplateBinding Background}" 
+                              Foreground="{TemplateBinding Foreground}" 
+                              Padding="{TemplateBinding Padding}" 
+                              Loaded="convViewer_Loaded">
+                            <ItemsPresenter/>
+                        </ScrollViewer>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+
+        <Storyboard x:Name="OpenPinPicker">
+            <DoubleAnimation
+                Storyboard.TargetName="FullScreenBlackBackground"
+                Storyboard.TargetProperty="Opacity"
+                From="0.0" To="1.0" Duration="0:0:0.4" d:IsOptimized="True">
+                <DoubleAnimation.EasingFunction>
+                    <ExponentialEase EasingMode="EaseOut" Exponent="6"/>
+                </DoubleAnimation.EasingFunction>
+            </DoubleAnimation>
+            <DoubleAnimation
+                Storyboard.TargetName="TilePicker"
+                Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.TranslateY)"
+                From="800" To="0" Duration="0:0:0.4" d:IsOptimized="True">
+                <DoubleAnimation.EasingFunction>
+                    <ExponentialEase EasingMode="EaseOut" Exponent="6"/>
+                </DoubleAnimation.EasingFunction>
+            </DoubleAnimation>
+            <DoubleAnimation
+                Storyboard.TargetName="TilePicker"
+                Storyboard.TargetProperty="Opacity"
+                From="0.0" To="1.0" Duration="0:0:0.4" d:IsOptimized="True">
+                <DoubleAnimation.EasingFunction>
+                    <ExponentialEase EasingMode="EaseOut" Exponent="3"/>
+                </DoubleAnimation.EasingFunction>
+            </DoubleAnimation>
+        </Storyboard>
+        <Storyboard x:Name="ClosePinPicker">
+            <DoubleAnimation
+                Storyboard.TargetName="FullScreenBlackBackground"
+                Storyboard.TargetProperty="Opacity"
+                From="1.0" To="0.0" Duration="0:0:0.4" d:IsOptimized="True" Completed="ClosePinPicker_complete">
+                <DoubleAnimation.EasingFunction>
+                    <ExponentialEase EasingMode="EaseOut" Exponent="3"/>
+                </DoubleAnimation.EasingFunction>
+            </DoubleAnimation>
+            <DoubleAnimation
+                Storyboard.TargetName="TilePicker"
+                Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.TranslateY)"
+                From="00" To="800" Duration="0:0:0.4" d:IsOptimized="True">
+                <DoubleAnimation.EasingFunction>
+                    <ExponentialEase EasingMode="EaseOut" Exponent="6"/>
+                </DoubleAnimation.EasingFunction>
+            </DoubleAnimation>
+            <DoubleAnimation
+                Storyboard.TargetName="TilePicker"
+                Storyboard.TargetProperty="Opacity"
+                From="1.0" To="0.0" Duration="0:0:0.4" d:IsOptimized="True">
+                <DoubleAnimation.EasingFunction>
+                    <ExponentialEase EasingMode="EaseOut" Exponent="6"/>
+                </DoubleAnimation.EasingFunction>
+            </DoubleAnimation>
+        </Storyboard>
+    </phone:PhoneApplicationPage.Resources >
+
+    <!--LayoutRoot is the root grid where all page content is placed-->
+    <Grid x:Name="LayoutRoot">
+        <Grid>
+            <!--Pivot Control-->
+            <controls:Pivot Title=" " x:Name="mainPivot" toolkit:TurnstileFeatherEffect.FeatheringIndex="0" LoadingPivotItem="mainPivot_LoadingPivotItem" Margin="0,12,0,0">
+                <!--Pivot item one-->
+                <controls:PivotItem Header="hot">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"></RowDefinition>
+                            <RowDefinition Height="*"></RowDefinition>
+                        </Grid.RowDefinitions>
+                        <ProgressBar Background="Transparent" toolkit:TurnstileFeatherEffect.FeatheringIndex="0"  x:Name="HotLoading" Grid.Row="0" Height="4" Margin="0,-60,0,0" Visibility="Visible" />
+                        <ListBox x:Name="HotList" Grid.Row="1" toolkit:TurnstileFeatherEffect.FeatheringIndex="1" Margin="0,0,-12,0" ItemsSource="{Binding HotStories}" GotFocus="ListFocusFix_GotFocus"
+                                 ItemContainerStyle="{StaticResource ItemAnimations}" HorizontalContentAlignment="Stretch" ItemTemplate="{StaticResource ListViewItemDataTemplate}" Style="{StaticResource HotScrollBarListBox}"  > 
+                        </ListBox>
+                        <TextBlock x:Name="HotNoStories" Text="no stories here" toolkit:TurnstileFeatherEffect.FeatheringIndex="1" Visibility="Collapsed" Margin="12,0,0,0" Style="{StaticResource PhoneTextLargeStyle}" Foreground="{StaticResource PhoneSubtleBrush}"/>
+                    </Grid>
+                </controls:PivotItem>
+                <controls:PivotItem Header="new">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"></RowDefinition>
+                            <RowDefinition Height="*"></RowDefinition>
+                        </Grid.RowDefinitions>
+                        <ProgressBar Background="Transparent" toolkit:TurnstileFeatherEffect.FeatheringIndex="0"  x:Name="NewLoading" Grid.Row="0" Height="4" Margin="0,-60,0,0" Visibility="Visible" />
+                        <ListBox x:Name="NewList" Grid.Row="1" toolkit:TurnstileFeatherEffect.FeatheringIndex="1" Margin="0,0,-12,0" ItemsSource="{Binding NewStories}" GotFocus="ListFocusFix_GotFocus"
+                                 ItemContainerStyle="{StaticResource ItemAnimations}" HorizontalContentAlignment="Stretch"  ItemTemplate="{StaticResource ListViewItemDataTemplate}" Style="{StaticResource NewScrollBarListBox}" ></ListBox>
+                        <TextBlock x:Name="NewNoStories" Text="no stories here" toolkit:TurnstileFeatherEffect.FeatheringIndex="1" Visibility="Collapsed" Margin="12,0,0,0" Style="{StaticResource PhoneTextLargeStyle}" Foreground="{StaticResource PhoneSubtleBrush}"/>
+                    </Grid>  
+                </controls:PivotItem>
+                <controls:PivotItem Header="top">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"></RowDefinition>
+                            <RowDefinition Height="*"></RowDefinition>
+                        </Grid.RowDefinitions>
+                        <ProgressBar Background="Transparent" toolkit:TurnstileFeatherEffect.FeatheringIndex="0"  x:Name="TopLoading" Grid.Row="0" Height="4" Margin="0,-60,0,0" Visibility="Visible" />
+                        <ListBox x:Name="TopList" Grid.Row="1" toolkit:TurnstileFeatherEffect.FeatheringIndex="1" Margin="0,0,-12,0" ItemsSource="{Binding TopStories}" GotFocus="ListFocusFix_GotFocus"
+                                 ItemContainerStyle="{StaticResource ItemAnimations}" HorizontalContentAlignment="Stretch"  ItemTemplate="{StaticResource ListViewItemDataTemplate}" Style="{StaticResource TopScrollBarListBox}" ></ListBox>
+                        <TextBlock x:Name="TopNoStories" Text="no stories here" toolkit:TurnstileFeatherEffect.FeatheringIndex="1" Visibility="Collapsed"  Margin="12,0,0,0" Style="{StaticResource PhoneTextLargeStyle}" Foreground="{StaticResource PhoneSubtleBrush}"/>
+                    </Grid>
+                </controls:PivotItem>
+                <controls:PivotItem Header="controversial">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"></RowDefinition>
+                            <RowDefinition Height="*"></RowDefinition>
+                        </Grid.RowDefinitions>
+                        <ProgressBar Background="Transparent" toolkit:TurnstileFeatherEffect.FeatheringIndex="0" x:Name="ControversialLoading" Grid.Row="0" Height="4" Margin="0,-60,0,0" Visibility="Visible" />
+                        <ListBox x:Name="ControversialList" toolkit:TurnstileFeatherEffect.FeatheringIndex="1" Grid.Row="1" Margin="0,0,-12,0" ItemsSource="{Binding ConvStories}" GotFocus="ListFocusFix_GotFocus"
+                                 ItemContainerStyle="{StaticResource ItemAnimations}" HorizontalContentAlignment="Stretch"  ItemTemplate="{StaticResource ListViewItemDataTemplate}"  Style="{StaticResource ConvScrollBarListBox}"></ListBox>
+                        <TextBlock x:Name="ConvNoStories" Text="no stories here" toolkit:TurnstileFeatherEffect.FeatheringIndex="1" Visibility="Collapsed" Margin="12,0,0,0" Style="{StaticResource PhoneTextLargeStyle}" Foreground="{StaticResource PhoneSubtleBrush}"/>
+                    </Grid>
+                </controls:PivotItem>
+            </controls:Pivot >
+        </Grid>
+        <Image Visibility="Collapsed" x:Name="StoryHelpOverlay" VerticalAlignment="Top" Tap="StoryHelpOverlay_Tap"></Image>
+        <Grid x:Name="LoadingSubreddit" Visibility="Collapsed">
+            <Rectangle x:Name="LoggingInOverlayBack" Height="800" Width="Auto" Fill="#BB000000" />
+            <TextBlock Text="Loading Subreddit..." VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,80,0,0"/>
+            <ProgressBar Background="Transparent"  x:Name="LoadingSubredditLoadingBar" Width="Auto" VerticalAlignment="Center" Margin="0,0,0,00"/>
+        </Grid>
+
+        <Grid x:Name="FullScreenBlackBackground" Background="#EE000000" Visibility="Collapsed"></Grid>
+        <Grid x:Name="TilePicker" Visibility="Collapsed">
+            <Grid.RenderTransform>
+                <CompositeTransform/>
+            </Grid.RenderTransform>            
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            
+            <TextBlock Grid.Row="0" Margin="24,30,20,20" Text="Select A Tile Icon And Type" FontSize="25" />
+
+            <toolkit:ListPicker Grid.Row="1" x:Name="TileIcon" Margin="24,6,24,18" Header="Tile Icon" ExpansionMode="FullScreenOnly" SelectionChanged="TileIcon_SelectionChanged" >
+                <toolkit:ListPicker.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="{Binding Title}"/>
+                        </StackPanel>
+                    </DataTemplate>
+                </toolkit:ListPicker.ItemTemplate>
+                <toolkit:ListPicker.FullModeItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Orientation="Horizontal" Margin="0,12,12,12">
+                            <Grid Background="{StaticResource PhoneAccentBrush}" Width="173" Height="173">
+                                <Image Source="{Binding Path}"/>
+                            </Grid>
+                            <TextBlock Text="{Binding Title}" VerticalAlignment="Center" Margin="16" FontSize="30" FontFamily="{StaticResource PhoneFontFamilyLight}"/>
+                        </StackPanel>
+                    </DataTemplate>
+                </toolkit:ListPicker.FullModeItemTemplate>
+            </toolkit:ListPicker>
+
+            <Button  Grid.Row="2" BorderBrush="Transparent" Margin="0" Click="ImageTile_Click">                 
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Grid.Row="0" Margin="0,12" Text="Image Tile" FontSize="25" HorizontalAlignment="Left" VerticalAlignment="Top" />
+                    <Grid Grid.Column="0" Grid.Row="1" Height="175" Width="170">
+                        <Image Source="/Images/LiveTiles/DynSample.png"/>
+                        <TextBlock Text="Title" Margin="6,140,0,0" x:Name="PinSettingsSubNameImage" Foreground="White"/>
+                    </Grid>
+                    <TextBlock Grid.Column="1" Grid.Row="10" Style="{StaticResource PhoneTextSubtleStyle}" Text="An image live tile will show the top images from the selected subreddit. The tile will scroll through a few of the images and will update nightly when on WiFi." TextWrapping="Wrap" Margin="12,0,12,0" />
+                </Grid>
+            </Button>
+
+            <Button  Grid.Row="3" BorderBrush="Transparent" Margin="0" Click="IconicTile_click">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Grid.Row="0" Margin="0,12" Text="Icon Tile" FontSize="25" HorizontalAlignment="Left" VerticalAlignment="Top" />
+                    <Grid Grid.Column="0" Grid.Row="1" Height="175" Width="170" Background="{StaticResource PhoneAccentBrush}">
+                        <Image Margin="10" Source="/Images/LiveTiles/BaconDispenser_m.png" x:Name="PinSettingsSampleImage"/>
+                        <TextBlock Text="Title" Margin="6,140,0,0" x:Name="PinSettingsSubName" Foreground="White"/>
+                    </Grid>
+                    <TextBlock Grid.Column="1" Grid.Row="10" Style="{StaticResource PhoneTextSubtleStyle}" Text="An icon tile will show the subreddit name and icon choose above. In the large form it will also show the top stories of subreddit. This will update nightly only when on Wifi." TextWrapping="Wrap" Margin="12,0,12,0" />
+                </Grid>
+            </Button>
+        </Grid>        
+    </Grid>  
+</phone:PhoneApplicationPage>

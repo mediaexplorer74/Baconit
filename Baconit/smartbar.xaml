@@ -1,0 +1,111 @@
+﻿<phone:PhoneApplicationPage 
+    x:Class="Baconit.SmartBar"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:phone="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone"
+    xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.ToolkitCustom"
+    FontFamily="{StaticResource PhoneFontFamilyNormal}"
+    FontSize="{StaticResource PhoneFontSizeNormal}"
+    Foreground="{StaticResource PhoneForegroundBrush}"
+    SupportedOrientations="Portrait" Orientation="Portrait"
+    mc:Ignorable="d" d:DesignHeight="800" d:DesignWidth="480"
+    toolkit:TiltEffect.IsTiltEnabled="True">
+
+    <phone:PhoneApplicationPage.Resources >
+        <Storyboard x:Name="CloseHelpAnmi">
+            <DoubleAnimation
+                    Storyboard.TargetName="SmartBarHelp"
+                    Storyboard.TargetProperty="Opacity"
+                    From="1.0" To="0.0" Duration="0:0:0.2" />
+            <DoubleAnimation
+                    Storyboard.TargetName="SmartBarHelp"
+                    Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.TranslateY)"
+                    From="0" To="50" Duration="0:0:0.2" />
+        </Storyboard>
+        <Storyboard x:Name="OpenHelpAnmi">
+            <DoubleAnimation
+                    Storyboard.TargetName="SmartBarHelp"
+                    Storyboard.TargetProperty="Opacity"
+                    From="0.0" To="1.0" Duration="0:0:0.2" />
+            <DoubleAnimation
+                    Storyboard.TargetName="SmartBarHelp"
+                    Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.TranslateY)"
+                    From="50" To="0" Duration="0:0:0.2" />
+        </Storyboard>
+    </phone:PhoneApplicationPage.Resources >
+
+    <!--LayoutRoot is the root grid where all page content is placed-->
+    <Grid x:Name="LayoutRoot" Background="Transparent">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <!--TitlePanel contains the name of the application and page title-->
+            <StackPanel x:Name="TitlePanel" Grid.Row="0" Margin="12,17,12,28" >
+                <TextBlock x:Name="ApplicationTitle" Text="SMART BAR" Style="{StaticResource PhoneTextNormalStyle}" />
+                <toolkit:AutoCompleteBox x:Name="SmartBarBox" Margin="0,6
+                                         ,0,0" FilterMode="Custom" KeyUp="SmartBarBox_KeyUp" SelectionChanged="SmartBarBox_SelectionChanged" InputScope="Text">
+                    <toolkit:AutoCompleteBox.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Vertical">
+                                <TextBlock Text="{Binding Text}" Margin="6,10,6,10"/>
+                            </StackPanel>
+                        </DataTemplate>
+                    </toolkit:AutoCompleteBox.ItemTemplate>
+                </toolkit:AutoCompleteBox>                
+            </StackPanel>
+
+            <!--ContentPanel - place additional content here-->
+            <Grid x:Name="ContentPanel" Grid.Row="1" Margin="12,-6,12,0">
+                <StackPanel x:Name="TextHolderUI">
+                    <TextBlock x:Name="TextHolderTextUI" Text="enter a search term" Margin="12,0,0,0" Style="{StaticResource PhoneTextLargeStyle}" Foreground="{StaticResource PhoneSubtleBrush}"/>
+                </StackPanel>
+                <ListBox x:Name="SearchList" Margin="12,0,12,0" ItemsSource="{Binding SearchResults}" Visibility="Collapsed" SelectionChanged="SearchList_SelectionChanged">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <Grid >
+                                <TextBlock Text="{Binding SubSectionTitle}" Margin="0,14,0,12" FontSize="30" Visibility="{Binding ShowSubSection}" Foreground="{StaticResource PhoneAccentBrush}" Style="{StaticResource PhoneTextSubtleStyle}" toolkit:TiltEffect.IsTiltEnabled="False" toolkit:TiltEffect.SuppressTilt="True"></TextBlock>
+
+                                <StackPanel Orientation="Vertical" Margin="0,8,0,9" Visibility="{Binding ShowSubReddit}" toolkit:TiltEffect.IsTiltEnabled="True">
+                                    <TextBlock Text="{Binding SubRedditLineOne}" FontSize="30" VerticalAlignment="Center" Width="313" Height="40" TextTrimming="WordEllipsis" Margin="0,0,8,0" />
+                                    <TextBlock Text="{Binding SubRedditLineTwo}" Margin="0,0,0,0" Height="27" TextTrimming="WordEllipsis" Style="{StaticResource PhoneTextSubtleStyle}" VerticalAlignment="Center" />
+                                </StackPanel>
+
+                                <StackPanel Orientation="Vertical" Margin="0,12,0,12" Visibility="{Binding ShowSearchResult}" toolkit:TiltEffect.IsTiltEnabled="True">
+                                    <TextBlock x:Name="HotTitle" Text="{Binding SearchResOne}" TextWrapping="Wrap" FontSize="23" MaxHeight="{Binding MaxTitleHeight}" Style="{StaticResource PhoneTextNormalStyle}" HorizontalAlignment="Left"  Margin="0,0,0,0" />
+                                    <TextBlock Text="{Binding SearchResTwo}" Height="27" TextTrimming="WordEllipsis" Style="{StaticResource PhoneTextSubtleStyle}" HorizontalAlignment="Left" Margin="0,0,0,0" />
+                                    <TextBlock Text="{Binding SearchResThree}" Height="27" TextTrimming="WordEllipsis" Foreground="{StaticResource PhoneAccentBrush}" Style="{StaticResource PhoneTextSubtleStyle}" HorizontalAlignment="Left" Margin="0,0,0,0" />
+                                </StackPanel>
+
+                            </Grid>
+                            
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </Grid>           
+        </Grid>
+
+        <StackPanel x:Name="SmartBarHelp" Orientation="Vertical" Height="850" Width="480" Background="#EE000000" Visibility="Collapsed">
+            <StackPanel.RenderTransform>
+                <CompositeTransform/>
+            </StackPanel.RenderTransform>
+            <TextBlock Margin="24,30,20,20" Text="SMART BAR" FontSize="40" />
+            <TextBlock Text="Instant Subreddits" Margin="24,0,0,12" FontSize="25"></TextBlock>
+            <TextBlock Text="Enter any subreddit url or short url into the SmartBox to instantly view the subreddit.&#13;e.g. /r/Baconit or reddit.com/r/Baconit" TextWrapping="Wrap" Margin="24,0,24,0" Style="{StaticResource PhoneTextSubtleStyle}"></TextBlock>
+            <TextBlock Text="Reddit URL Lookup" Margin="24,12,0,12" FontSize="25"></TextBlock>
+            <TextBlock Text="Enter any story's comment url (story perminlink) to instantly view the story's comments in Baconit. This kind of link might be found on Twitter or Facebook.&#13;e.g. www.reddit.com/r/aww/comments/oorms" TextWrapping="Wrap" Margin="24,0,24,0" Style="{StaticResource PhoneTextSubtleStyle}"></TextBlock>
+            <TextBlock Text="Reddit Search" Margin="24,12,0,12" FontSize="25"></TextBlock>
+            <TextBlock Text="Enter any search phrase into the SmartBox to see related subreddits, users, and reddit story search results from the reddit search engine.&#13;e.g. 'Baconit' or 'Windows Phone'" TextWrapping="Wrap" Margin="24,0,24,0" Style="{StaticResource PhoneTextSubtleStyle}"></TextBlock>
+
+            <Grid x:Name="CloseHelp" Margin="24,60,24,20" Background="{StaticResource PhoneAccentBrush}" Width="440" Tap="CloseHelp_Tap" toolkit:TiltEffect.IsTiltEnabled="True">
+                <TextBlock Foreground="White"  Text="close help" FontSize="25" Margin="10" HorizontalAlignment="Center" />
+            </Grid>
+        </StackPanel>
+         <ProgressBar Background="Transparent"  x:Name="LoadingBar" Visibility="Visible" Margin="12,0,12,0" VerticalAlignment="Top" />        
+    </Grid>
+</phone:PhoneApplicationPage>

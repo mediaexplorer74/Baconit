@@ -1,0 +1,150 @@
+﻿<phone:PhoneApplicationPage 
+    x:Class="Baconit.AddSubreddit"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:phone="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone"
+    xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.ToolkitCustom"
+    FontFamily="{StaticResource PhoneFontFamilyNormal}"
+    FontSize="{StaticResource PhoneFontSizeNormal}"
+    Foreground="{StaticResource PhoneForegroundBrush}"
+    SupportedOrientations="Portrait" Orientation="Portrait"
+    mc:Ignorable="d" d:DesignHeight="768" d:DesignWidth="480"
+    xmlns:local="clr-namespace:Baconit"
+    shell:SystemTray.IsVisible="True" shell:SystemTray.Opacity="0">
+
+    <phone:PhoneApplicationPage.Resources>
+        <Storyboard x:Name="ShowList">
+            <DoubleAnimation
+                    Storyboard.TargetName="AddList"
+                    Storyboard.TargetProperty="Opacity"
+                    From="0.0" To="1.0" Duration="0:0:0.5" d:IsOptimized="True">
+                <DoubleAnimation.EasingFunction>
+                    <ExponentialEase EasingMode="EaseOut" Exponent="6"/>
+                </DoubleAnimation.EasingFunction>
+            </DoubleAnimation>
+        </Storyboard>
+
+        <Storyboard x:Name="ShowSubredditView">
+            <DoubleAnimation
+                Storyboard.TargetName="BlackBackground"
+                Storyboard.TargetProperty="Opacity"
+                From="0.0" To="1.0" Duration="0:0:0.4" d:IsOptimized="True">
+                <DoubleAnimation.EasingFunction>
+                    <ExponentialEase EasingMode="EaseOut" Exponent="6"/>
+                </DoubleAnimation.EasingFunction>
+            </DoubleAnimation>
+            <DoubleAnimation
+                Storyboard.TargetName="SubredditOverlay"
+                Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.TranslateY)"
+                From="800" To="0" Duration="0:0:0.4" d:IsOptimized="True">
+                <DoubleAnimation.EasingFunction>
+                    <ExponentialEase EasingMode="EaseOut" Exponent="6"/>
+                </DoubleAnimation.EasingFunction>
+            </DoubleAnimation>
+            <DoubleAnimation
+                Storyboard.TargetName="SubredditOverlay"
+                Storyboard.TargetProperty="Opacity"
+                From="0.0" To="1.0" Duration="0:0:0.4" d:IsOptimized="True">
+                <DoubleAnimation.EasingFunction>
+                    <ExponentialEase EasingMode="EaseOut" Exponent="3"/>
+                </DoubleAnimation.EasingFunction>
+            </DoubleAnimation>
+        </Storyboard>
+        <Storyboard x:Name="HideSubredditView">
+            <DoubleAnimation
+                Storyboard.TargetName="BlackBackground"
+                Storyboard.TargetProperty="Opacity"
+                From="1.0" To="0.0" Duration="0:0:0.4" d:IsOptimized="True">
+                <DoubleAnimation.EasingFunction>
+                    <ExponentialEase EasingMode="EaseOut" Exponent="3"/>
+                </DoubleAnimation.EasingFunction>
+            </DoubleAnimation>
+            <DoubleAnimation
+                Storyboard.TargetName="SubredditOverlay"
+                Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.TranslateY)"
+                From="00" To="800" Duration="0:0:0.4" d:IsOptimized="True">
+                <DoubleAnimation.EasingFunction>
+                    <ExponentialEase EasingMode="EaseOut" Exponent="6"/>
+                </DoubleAnimation.EasingFunction>
+            </DoubleAnimation>
+            <DoubleAnimation
+                Storyboard.TargetName="SubredditOverlay"
+                Storyboard.TargetProperty="Opacity"
+                From="1.0" To="0.0" Duration="0:0:0.4" d:IsOptimized="True">
+                <DoubleAnimation.EasingFunction>
+                    <ExponentialEase EasingMode="EaseOut" Exponent="6"/>
+                </DoubleAnimation.EasingFunction>
+            </DoubleAnimation>
+        </Storyboard>
+    </phone:PhoneApplicationPage.Resources>
+    
+
+    <!--LayoutRoot is the root grid where all page content is placed-->
+    <Grid Margin="0,32,0,0">
+        <Grid x:Name="LayoutRoot" Background="Transparent">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <!--TitlePanel contains the name of the application and page title-->
+            <StackPanel x:Name="TitlePanel" Grid.Row="0" Margin="12,17,0,5">
+                <TextBlock x:Name="ApplicationTitle" toolkit:TurnstileFeatherEffect.FeatheringIndex="0" Text="ADD SUBREDDIT" Style="{StaticResource PhoneTextNormalStyle}"/>
+                <TextBox x:Name="SearchQuery" toolkit:TurnstileFeatherEffect.FeatheringIndex="1" KeyUp="SearchQuery_KeyUp" Margin="0,6,0,0" InputScope="Search"/>
+            </StackPanel>
+            <!--ContentPanel - place additional content here-->
+            <StackPanel Grid.Row="1" Margin="12,0,12,0">
+                <ListBox x:Name="AddList" toolkit:TurnstileFeatherEffect.FeatheringIndex="2" Margin="0" Height="570" Visibility="Collapsed" ItemsSource="{Binding SubredditUIList}" SelectionChanged="AddList_SelectionChanged">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel Grid.Column="1" Orientation="Vertical" Margin="0,12,0,12">
+                                <TextBlock Text="{Binding SubredditTitle}" Style="{StaticResource PhoneTextExtraLargeStyle}" />
+                                <TextBlock Text="{Binding ThirdLine}" Style="{StaticResource PhoneTextSubtleStyle}" Margin="12,-2,12,0" TextTrimming="WordEllipsis" Foreground="{StaticResource PhoneAccentBrush}" />
+                                <TextBlock Text="{Binding SecondLineText}" Style="{StaticResource PhoneTextSubtleStyle}" Margin="12,0,12,0" MaxHeight="55" TextTrimming="WordEllipsis" TextWrapping="Wrap"/>
+                            </StackPanel>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+                <StackPanel x:Name="TextHolderUI" Visibility="Collapsed">
+                    <TextBlock Text="No results" Margin="12" Style="{StaticResource PhoneTextLargeStyle}" Foreground="{StaticResource PhoneSubtleBrush}"/>
+                </StackPanel>
+            </StackPanel>
+
+        </Grid>
+
+        <Grid x:Name="BlackBackground" Background="#EE000000" Visibility="Collapsed"></Grid>
+        <Grid x:Name="SubredditOverlay" Height="Auto" Width="Auto" Margin="0,-50,0,0" Visibility="Collapsed" CacheMode="BitmapCache">
+            <Grid.RenderTransform>
+                <CompositeTransform/>
+            </Grid.RenderTransform>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <TextBlock Grid.Row="0" x:Name="SubredditViewName" Margin="24,70,20,0" Text="BACONIT" FontSize="40" HorizontalAlignment="Left" />
+            <TextBlock Grid.Row="1" x:Name="SubredditViewSubs" Text="1337 Subscribers" Margin="24,0,24,20" ></TextBlock>
+            <ScrollViewer Grid.Row="2" Margin="24,0,24,12" x:Name="SubredditScoller" >
+                <local:SuperRichTextBox x:Name="SubredditDesciption"/>
+            </ScrollViewer>
+            <Grid Grid.Row="3">
+                <StackPanel>
+                    <Grid x:Name="AccountButton" Margin="15" Background="{StaticResource PhoneAccentBrush}" Width="430" Tap="SubAccount_Tap"  toolkit:TiltEffect.IsTiltEnabled="True">
+                        <TextBlock x:Name="AccountText" Foreground="White" Text="subscribe to account" FontSize="25" Margin="10" HorizontalAlignment="Center" />
+                    </Grid>
+                    <Grid x:Name="LocalButton" Margin="15" Background="{StaticResource PhoneAccentBrush}" Width="430" Tap="SubLocal_Tap"  toolkit:TiltEffect.IsTiltEnabled="True">
+                        <TextBlock x:Name="LocalText" Foreground="White" Text="subscribe to local" FontSize="25" Margin="10" HorizontalAlignment="Center" />
+                    </Grid>
+                    <Grid Margin="15" Background="{StaticResource PhoneAccentBrush}" Width="430" Tap="ViewSubreddit_Tap"  toolkit:TiltEffect.IsTiltEnabled="True">
+                        <TextBlock Foreground="White" Text="view subreddit" FontSize="25" Margin="10" HorizontalAlignment="Center" />
+                    </Grid>
+                </StackPanel>
+            </Grid>
+        </Grid>
+    </Grid>
+</phone:PhoneApplicationPage>

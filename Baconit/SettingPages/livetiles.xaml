@@ -1,0 +1,125 @@
+﻿<phone:PhoneApplicationPage 
+    x:Class="Baconit.SettingPages.LiveTiles"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:phone="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone"
+    xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.ToolkitCustom"
+    FontFamily="{StaticResource PhoneFontFamilyNormal}"
+    FontSize="{StaticResource PhoneFontSizeNormal}"
+    Foreground="{StaticResource PhoneForegroundBrush}"
+    SupportedOrientations="Portrait" Orientation="Portrait"
+    mc:Ignorable="d" d:DesignHeight="800" d:DesignWidth="480">
+
+    <phone:PhoneApplicationPage.Resources>
+        <Style x:Key="TextButton" TargetType="Button">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Grid Background="Transparent">
+                            <VisualStateManager.VisualStateGroups>
+                                <VisualStateGroup x:Name="CommonStates">
+                                    <VisualState x:Name="Normal"/>
+                                    <VisualState x:Name="MouseOver"/>
+                                    <VisualState x:Name="Pressed" />
+                                    <VisualState x:Name="Disabled" />
+                                </VisualStateGroup>
+                            </VisualStateManager.VisualStateGroups>
+                            <Border x:Name="ButtonBackground" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="0" CornerRadius="0" Margin="0" Background="Transparent">
+                                <ContentControl x:Name="ContentContainer" ContentTemplate="{TemplateBinding ContentTemplate}" Content="{TemplateBinding Content}" Foreground="{TemplateBinding Foreground}" HorizontalAlignment="Left" Padding="0"/>
+                            </Border>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </phone:PhoneApplicationPage.Resources>
+
+    <!--LayoutRoot is the root grid where all page content is placed-->
+    <Grid x:Name="LayoutRoot" Background="Transparent">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!--TitlePanel contains the name of the application and page title-->
+        <StackPanel x:Name="TitlePanel" Grid.Row="0" Margin="12,17,0,28">
+            <TextBlock toolkit:TurnstileFeatherEffect.FeatheringIndex="0" x:Name="SETTINGS" Text="SETTINGS" Style="{StaticResource PhoneTextNormalStyle}"/>
+            <TextBlock toolkit:TurnstileFeatherEffect.FeatheringIndex="1" x:Name="PageTitle" Text="lock screen &amp; live tiles" Margin="9,-7,0,0" Style="{StaticResource PhoneTextTitle1Style}"/>
+        </StackPanel>
+
+        <!--ContentPanel - place additional content here-->
+        <Grid x:Name="ContentPanel" Grid.Row="1" Margin="12,0,12,0">
+            <ScrollViewer>
+                <StackPanel Orientation="Vertical">    
+                    <TextBlock Foreground="{StaticResource PhoneAccentBrush}" toolkit:TurnstileFeatherEffect.FeatheringIndex="2" Text="Lock Screen" Margin="12,8,12,12" FontSize="25"></TextBlock>
+                    <toolkit:ToggleSwitch toolkit:TurnstileFeatherEffect.FeatheringIndex="3" Padding="0,0,0,0" x:Name="LockScreenEnable" Header="Use subreddit images as wallpaper" CacheMode="BitmapCache" Click="LockScreenEnable_Click">
+                    </toolkit:ToggleSwitch>
+                    <toolkit:ListPicker toolkit:TurnstileFeatherEffect.FeatheringIndex="4" x:Name="LockScreenSubreddit" Margin="12,0,12,18" Header="Wallpaper subreddit" ExpansionMode="FullScreenOnly" SelectionChanged="LockScreenSubreddit_SelectionChanged">
+                        <toolkit:ListPicker.FullModeItemTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal" Margin="12">
+                                    <TextBlock Text="{Binding}" Margin="-12,0,0,0" FontSize="35" FontFamily="{StaticResource PhoneFontFamilyLight}"/>
+                                </StackPanel>
+                            </DataTemplate>
+                        </toolkit:ListPicker.FullModeItemTemplate>
+                    </toolkit:ListPicker>
+                    <toolkit:ListPicker toolkit:TurnstileFeatherEffect.FeatheringIndex="5" x:Name="LockScreenUpdate" Margin="12,6,12,18" Header="Wallpaper update frequency (approximate)" ExpansionMode="FullScreenOnly" SelectionChanged="LockScreenUpdate_SelectionChanged">
+                        <toolkit:ListPicker.FullModeItemTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal" Margin="12">
+                                    <TextBlock Text="{Binding}" Margin="-12,0,0,0" FontSize="35" FontFamily="{StaticResource PhoneFontFamilyLight}"/>
+                                </StackPanel>
+                            </DataTemplate>
+                        </toolkit:ListPicker.FullModeItemTemplate>
+                    </toolkit:ListPicker>
+                    <toolkit:ToggleSwitch toolkit:TurnstileFeatherEffect.FeatheringIndex="6" Padding="0,0,0,0" x:Name="OnlyUpdateOnWifiLockScreen" Header="Only update lock image on WiFi" CacheMode="BitmapCache" Click="OnlyUpdateOnWifiLockScreen_Click_1">
+                    </toolkit:ToggleSwitch>               
+
+                    <TextBlock Foreground="{StaticResource PhoneAccentBrush}" toolkit:TurnstileFeatherEffect.FeatheringIndex="2" Text="Main Application Tile" Margin="12,8,12,12" FontSize="25"></TextBlock>
+                    <toolkit:ListPicker toolkit:TurnstileFeatherEffect.FeatheringIndex="7" x:Name="MainLiveTileBacktround" Margin="12,6,12,18" Header="Main tile background" ExpansionMode="FullScreenOnly" SelectionChanged="MainLiveTileBacktround_SelectionChanged" >
+                        <toolkit:ListPicker.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="{Binding Title}"/>
+                                </StackPanel>
+                            </DataTemplate>
+                        </toolkit:ListPicker.ItemTemplate>
+                        <toolkit:ListPicker.FullModeItemTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal" Margin="0,12,12,12">
+                                    <Grid Background="{StaticResource PhoneAccentBrush}" Width="173" Height="173">
+                                        <Image Source="{Binding Path}"/>
+                                    </Grid>
+                                    <TextBlock Text="{Binding Title}" VerticalAlignment="Center" Margin="16" FontSize="30" FontFamily="{StaticResource PhoneFontFamilyLight}"/>
+                                </StackPanel>
+                            </DataTemplate>
+                        </toolkit:ListPicker.FullModeItemTemplate>
+                    </toolkit:ListPicker>
+                    <toolkit:ToggleSwitch toolkit:TurnstileFeatherEffect.FeatheringIndex="8" Padding="0,4,0,0" x:Name="LiveTileShowUnreadCount" Header="Show unread message count" CacheMode="BitmapCache" Click="LiveTileShowUnreadCount_Click">
+                    </toolkit:ToggleSwitch>
+                    <toolkit:ToggleSwitch toolkit:TurnstileFeatherEffect.FeatheringIndex="9" Padding="0,0,0,0" x:Name="ShowLinkKarma" Header="Show link and comment karma" CacheMode="BitmapCache" Click="ShowLinkKarma_Click">
+                    </toolkit:ToggleSwitch>
+                    <toolkit:ToggleSwitch toolkit:TurnstileFeatherEffect.FeatheringIndex="10" Padding="0,0,0,0" x:Name="OnlyUpdateOnWifiTiles" Header="Only update tile images on Wifi" CacheMode="BitmapCache" Click="OnlyUpdateOnWifiTiles_Click_1">
+                    </toolkit:ToggleSwitch>
+
+                </StackPanel>
+            </ScrollViewer>
+        </Grid>
+    </Grid>
+ 
+    <!--Sample code showing usage of ApplicationBar-->
+    <!--<phone:PhoneApplicationPage.ApplicationBar>
+        <shell:ApplicationBar IsVisible="True" IsMenuEnabled="True">
+            <shell:ApplicationBarIconButton IconUri="/Images/appbar_button1.png" Text="Button 1"/>
+            <shell:ApplicationBarIconButton IconUri="/Images/appbar_button2.png" Text="Button 2"/>
+            <shell:ApplicationBar.MenuItems>
+                <shell:ApplicationBarMenuItem Text="MenuItem 1"/>
+                <shell:ApplicationBarMenuItem Text="MenuItem 2"/>
+            </shell:ApplicationBar.MenuItems>
+        </shell:ApplicationBar>
+    </phone:PhoneApplicationPage.ApplicationBar>-->
+
+</phone:PhoneApplicationPage>
