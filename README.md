@@ -21,7 +21,7 @@ Open the PC browser. Go to some site that allows to send POST request.
 
 Form api string:
 
-https://ssl.reddit.com/api/login?api_type=json&user=yourusertame&passwd=yourredditpassword
+https://ssl.reddit.com/api/login?api_type=json&user=yourredditusername&passwd=yourredditpassword
 
 Send that POST request and check the api responce "200 ok", cookie and modhash. :)
 
