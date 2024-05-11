@@ -16,7 +16,7 @@ The highest rated [r]eddit client for "very small (at 2023 year) Windows Phone f
 
 
 ## TODO
-- I noticed that auth manager obsolete. Try to fix Login issue via webvie User-Agent experimentation.
+- I noticed that auth manager obsolete. Try to fix Login issue via webview User-Agent tuning&experimentation.:)
 
 ## References
 - https://github.com/QuinnDamerell Quinn Damerell, Baconit creator / developer
